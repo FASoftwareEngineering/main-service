@@ -1,0 +1,50 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - ./database/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - mynetwork
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - ./database/pgadmin:/root/.pgadmin
+
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    networks:
+      - mynetwork
+
+  fastapi:
+    build: app/.
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    environment:
+      SERVER_ELASTIC_CONNECTION: ${SERVER_ELASTIC_CONNECTION}
+      SERVER_POSTGRES_CONNECTION: ${SERVER_POSTGRES_CONNECTION}
+    volumes:
+      - ./app/code/:/app/code/
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
