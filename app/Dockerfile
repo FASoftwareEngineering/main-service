@@ -1,23 +1,41 @@
-FROM ubuntu:20.04
+FROM python:3.9.6-alpine AS builder
 
-ENV LANG="en_US.UTF-8"
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update && apt-get install -y locales
+# Install dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev build-base libffi-dev
 
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen en_US.UTF-8 && \
-    /usr/sbin/update-locale LANG=en_US.UTF-8
+RUN pip install --upgrade pip
+COPY code .
 
-ENV LC_ALL en_US.UTF-8
+RUN apk add --no-cache libressl-dev musl-dev libffi-dev gcc
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-RUN \
-  apt-get update && \
-  apt-get install -y python3 python3-pip python3-dev
 
-ADD requirements.txt /app/
-WORKDIR /app
+FROM python:3.9.6-alpine AS build
 
-RUN pip3 install -r requirements.txt
+# Setup the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir -p $APP_HOME && addgroup -S app && adduser -S app -G app
+RUN mkdir $APP_HOME/staticfiles && mkdir $APP_HOME/mediafiles
 
-CMD ["python3", "./code/main.py"]
+WORKDIR $APP_HOME
+
+# install dependencies
+RUN apk update && apk add libpq gcc musl-dev libffi-dev
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt ./
+RUN pip install --no-cache /wheels/*
+
+COPY code $APP_HOME
+RUN chown -R app:app $APP_HOME
+
+USER app
+
+CMD ["python3", "main.py"]

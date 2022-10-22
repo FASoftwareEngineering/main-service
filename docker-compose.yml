@@ -38,7 +38,6 @@ services:
       - "8000:8000"
     restart: on-failure
     environment:
-      SERVER_ELASTIC_CONNECTION: ${SERVER_ELASTIC_CONNECTION}
       SERVER_POSTGRES_CONNECTION: ${SERVER_POSTGRES_CONNECTION}
     volumes:
       - ./app/code/:/app/code/
