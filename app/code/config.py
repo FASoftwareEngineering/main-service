@@ -1,6 +1,0 @@
-import os
-
-SERVER_POSTGRES_CONNECTION = os.getenv("SERVER_POSTGRES_CONNECTION", None)
-
-if SERVER_POSTGRES_CONNECTION is None:
-    raise ValueError("SERVER_POSTGRES_CONNECTION is not set!")

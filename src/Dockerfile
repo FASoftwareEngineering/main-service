@@ -10,7 +10,7 @@ RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev build-base libffi-dev
 
 RUN pip install --upgrade pip
-COPY code .
+COPY app .
 
 RUN apk add --no-cache libressl-dev musl-dev libffi-dev gcc
 COPY ./requirements.txt .
@@ -33,7 +33,7 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt ./
 RUN pip install --no-cache /wheels/*
 
-COPY code $APP_HOME
+COPY app $APP_HOME
 RUN chown -R app:app $APP_HOME
 
 USER app

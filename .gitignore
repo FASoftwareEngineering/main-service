@@ -1,5 +1,13 @@
-
 .DS_Store
-.env.prod
 *.pyc
 database
+.idea/
+__pycache__/
+
+# локальные виртуальные окружения
+venv/
+.venv/
+
+# локальные конфигурации
+.env*
+!.env.example
