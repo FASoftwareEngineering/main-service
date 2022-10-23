@@ -33,14 +33,14 @@ services:
       - mynetwork
 
   fastapi:
-    build: app/.
+    build: src/.
     ports:
       - "8000:8000"
     restart: on-failure
     environment:
       SERVER_POSTGRES_CONNECTION: ${SERVER_POSTGRES_CONNECTION}
     volumes:
-      - ./app/code/:/app/code/
+      - ./src/app/:/src/app/
     networks:
       - mynetwork
 
