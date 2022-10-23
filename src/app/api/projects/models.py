@@ -3,7 +3,6 @@ from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
-from app.api.models import OwnersProjectsLink, ManagersProjectsLink
 from app.api.projects.constants import ProjectStatuses
 from app.api.users.constants import UserTypes
 from app.api.users.models import User
@@ -13,6 +12,8 @@ __all__ = [
     "Project",
     "ProjectOwner",
     "ProjectManager",
+    "OwnersProjectsLink",
+    "ManagersProjectsLink",
 ]
 
 
@@ -67,3 +68,23 @@ class ProjectManager(User):
     __mapper_args__ = {
         "polymorphic_identity": UserTypes.project_manager,
     }
+
+
+class OwnersProjectsLink(BaseModel):
+    __tablename__ = "owners_projects_link"
+
+    project_id: int = sa.Column(sa.ForeignKey("project.id", ondelete="CASCADE"), primary_key=True)
+    owner_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
+
+    start_date: datetime = sa.Column(sa.DateTime, default=datetime.utcnow, nullable=False)
+    end_date: datetime = sa.Column(sa.DateTime)
+
+
+class ManagersProjectsLink(BaseModel):
+    __tablename__ = "managers_projects_link"
+
+    project_id: int = sa.Column(sa.ForeignKey("project.id", ondelete="CASCADE"), primary_key=True)
+    manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
+
+    start_date: datetime = sa.Column(sa.DateTime, default=datetime.utcnow, nullable=False)
+    end_date: datetime = sa.Column(sa.DateTime)

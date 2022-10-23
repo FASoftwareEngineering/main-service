@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
 from app.api.users.constants import UserTypes
-from app.core.db import BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin
+from app.core.db import BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin, StrSizes
 
 __all__ = [
     "User",
@@ -15,6 +15,13 @@ class User(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
 
     sso_id: str = sa.Column(sa.String(36))
     type: UserTypes = sa.Column(sa.Enum(UserTypes))
+
+    first_name: str = sa.Column(sa.String(StrSizes.SM), nullable=False)
+    last_name: str = sa.Column(sa.String(StrSizes.SM), nullable=False)
+    middle_name: str = sa.Column(sa.String(StrSizes.SM))
+
+    email: str = sa.Column(sa.String(StrSizes.SM))
+    phone: str = sa.Column(sa.String(StrSizes.SM))
 
     __mapper_args__ = {
         "polymorphic_on": type,
