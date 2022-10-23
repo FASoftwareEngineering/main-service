@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine AS builder
+FROM python:3.10-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -17,7 +17,7 @@ COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 
-FROM python:3.9.6-alpine AS build
+FROM python:3.10-alpine AS build
 
 # Setup the appropriate directories
 ENV HOME=/home/app
