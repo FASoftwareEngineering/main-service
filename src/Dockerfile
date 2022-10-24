@@ -10,7 +10,7 @@ RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev build-base libffi-dev
 
 RUN pip install --upgrade pip
-COPY app .
+COPY . .
 
 RUN apk add --no-cache libressl-dev musl-dev libffi-dev gcc
 COPY ./requirements.txt .
@@ -33,9 +33,9 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt ./
 RUN pip install --no-cache /wheels/*
 
-COPY app $APP_HOME
+COPY . $APP_HOME
 RUN chown -R app:app $APP_HOME
 
 USER app
 
-CMD ["python3", "main.py"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
