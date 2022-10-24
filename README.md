@@ -140,7 +140,11 @@ INFO:     Started reloader process [13520] using StatReload
 
 ### Docker
 
-> TODO
+Запустить контейнеры приложения, базы данных и пр. в фоновом режиме на основе манифеста `docker-compose.yaml` с учазание файла с переменными окружения `.env`:
+
+```
+docker-compose --env-file .env up -d
+```
 
 ### Команды, используемые в разработке
 
