@@ -21,7 +21,9 @@ def get_crud(session: SessionT = Depends(get_session)) -> CRUD[models.Project]:
     return services.crud_factory(session)
 
 
-def valid_project_id(project_id: int, crud: CRUD[models.Project] = Depends(get_crud)) -> models.Project:
+def valid_project_id(
+    project_id: int, crud: CRUD[models.Project] = Depends(get_crud)
+) -> models.Project:
     project = crud.get_by_id(project_id)
     if not project:
         raise_404(project_id)
@@ -49,7 +51,9 @@ def get_projects(
     )
 
 
-@router.post("", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED
+)
 def create_project(
     data: schemas.ProjectCreate,
     session: SessionT = Depends(get_session),
