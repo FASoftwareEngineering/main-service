@@ -170,7 +170,20 @@ alembic upgrade head
 
 ## Полезные ресурсы
 
-> TODO
+**Используемые инструменты:**
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [pydantic](https://pydantic-docs.helpmanual.io/)
+- [SQLAlchemy 1.4](https://docs.sqlalchemy.org/en/14/)
+- [alembic](https://alembic.sqlalchemy.org/en/latest/)
+
+**FastAPI примеры и лучшие практики:**
+
+- [fastapi-best-practices](https://github.com/zhanymkanov/fastapi-best-practices/blob/master/README.md) - содержательный список лучших практик и соглашений. Обязательно к ознакомлению.
+- [Netflix/dispatch](https://github.com/Netflix/dispatch) - большое приложение реального мира от Netflix. То что вы хотите реализовать, скорее всего, уже делали там.
+- [tiangolo/full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql) - комплексный пример проекта от автора FastAPI. Проект не развивается и считается устревшим - относиться скиптически.
+- [apiestas](https://github.com/franloza/apiestas)
+- [FastAPI-template](https://github.com/s3rius/FastAPI-template)
 
 [//]: # (Спроектировать и задокументировать дизайн API домена проектов)
 
