@@ -83,6 +83,8 @@
 git clone https://github.com/FASoftwareEngineering/main-service.git
 ```
 
+### Локальный запуск
+
 Python>=3.10. Проверить версию python:
 
 ```
@@ -132,6 +134,10 @@ INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [13520] using StatReload
 ...
 ```
+
+### Docker
+
+> TODO
 
 [//]: # (Спроектировать и задокументировать дизайн API домена проектов)
 
