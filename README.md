@@ -107,8 +107,7 @@ python -m venv .venv
 Установить зависимости:
 
 ```
-.\.venv\Scripts\activate
-
+.\.venv\Scripts\activate  # активировать виртуальное окружение
 pip install -r requirements.dev.txt
 ```
 
@@ -116,13 +115,11 @@ pip install -r requirements.dev.txt
 
 Создать файл `.env` и заполнить его по аналогии с `.env.example`.
 
-Запустить FastAPI приложение:
+Запустить [FastAPI](https://fastapi.tiangolo.com/tutorial/first-steps/) приложение:
 
 ```
 uvicorn app.main:app --reload 
-
 # или
-
 python -m uvicorn app.main:app --reload 
 ```
 
