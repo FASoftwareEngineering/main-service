@@ -15,9 +15,7 @@ def anyio_backend():
 
 @pytest.fixture(scope="module")
 async def client() -> Generator[AsyncClient, None, None]:
-    async with AsyncClient(
-        base_url=urljoin("http://127.0.0.1:8000", config.API_PREFIX)
-    ) as client:
+    async with AsyncClient(base_url=urljoin("http://127.0.0.1:8000", config.API_PREFIX)) as client:
         yield client
 
 

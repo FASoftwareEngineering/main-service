@@ -14,9 +14,7 @@ __all__ = [
 class Employee(User):
     manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="SET NULL"))
 
-    manager: "Employee" = relationship(
-        "Employee", remote_side="Employee.id", back_populates="employees"
-    )
+    manager: "Employee" = relationship("Employee", remote_side="Employee.id", back_populates="employees")
     employees: list["Employee"] = relationship("Employee", back_populates="manager")
 
     __mapper_args__ = {

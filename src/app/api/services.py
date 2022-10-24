@@ -44,9 +44,7 @@ class CRUD(t.Generic[_M]):
     ) -> tuple[list[_M], int]:
         exec_opts = {"_include_deleted": _include_deleted}
         stmt = sql.select(self.model_cls).offset(offset).limit(limit)
-        total = self.session.scalar(
-            sql.select(sql.func.count()).select_from(self.model_cls)
-        )
+        total = self.session.scalar(sql.select(sql.func.count()).select_from(self.model_cls))
         return self.session.scalars(stmt, execution_options=exec_opts).all(), total
 
     def delete(self, entity: _M, soft: bool = True) -> None:
