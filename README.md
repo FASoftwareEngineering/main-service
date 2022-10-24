@@ -83,6 +83,9 @@
 git clone https://github.com/FASoftwareEngineering/main-service.git
 ```
 
+- [локальный запуск](#локальный-запуск)
+- [Docker](#docker)
+
 ### Локальный запуск
 
 Python>=3.10. Проверить версию python:
