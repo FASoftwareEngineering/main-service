@@ -13,7 +13,7 @@ class Config(BaseSettings):
 
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
 
-    SQLALCHEMY_DATABASE_URI: str | None
+    SERVER_POSTGRES_CONNECTION: str | None
 
     LOGGING_CONFIG: dict[str, t.Any] = {
         "handlers": [
@@ -26,7 +26,7 @@ class Config(BaseSettings):
     }
 
     class Config:
-        env_file = _BASE_DIR.parent / ".env"
+        env_file = _BASE_DIR.parent.parent / ".env"
 
 
 config = Config()
