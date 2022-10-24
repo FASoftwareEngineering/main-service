@@ -5,10 +5,10 @@ repos:
     rev: 22.8.0
     hooks:
       - id: black
-        args: [--diff, --check]
+        args: [src, --diff, --check]
 
   - repo: https://github.com/pycqa/pylint
     rev: v2.15.3
     hooks:
       - id: pylint
-        args: [--errors-only, --disable=E0401]
+        args: [--errors-only, --disable=E0401, --disable=E0611, --ignore-paths="^src/migrations/.*$"]
