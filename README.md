@@ -11,8 +11,9 @@
 ### ./
 
 - **configs/** - статические конфигурации приложения, связанные с процессом сборки приложения
-- **deployments/** - содержит файлы связанные с развертыванием: манифесты Docker Compose, манифесты и настройки Kubernetes 
-- **docs/** - документация к проекту, дизайну и коду 
+- **deployments/** - содержит файлы связанные с развертыванием: манифесты Docker Compose, манифесты и
+  настройки Kubernetes
+- **docs/** - документация к проекту, дизайну и коду
 - **src/** - код приложения и связанные с ним файлы миграций, зависимостей, конфигураций.
 - **.env.example** - пример **.env** файла
 - **.gitignore** - используется для того, чтобы определить, какие файлы не нужно добавлять в git репозиторий
@@ -65,21 +66,77 @@
 ```
 
 Каждый доменный модуль (`employees, projects, ...`) может содержать:
-- `views.py` - API ручки для работы с ресурсами 
+
+- `views.py` - API ручки для работы с ресурсами
 - `schemas.py` - схемы запросов и ответов API
 - `models.py` - модели базы данных
 - `services.py` - реализация бизнес-логики модуля
 - _`constants.py` - специфические константы_
-- _`exceptions.py` - специфические API исключения_ 
-- _`dependencies.py` - для хранения зависимостей (если зависимостей мало, лучше хранить их в `views.py`)_ 
+- _`exceptions.py` - специфические API исключения_
+- _`dependencies.py` - для хранения зависимостей (если зависимостей мало, лучше хранить их в `views.py`)_
 
 ## Как начать разработку
 
+Клонировать репозиторий:
 
+```git
+git clone https://github.com/FASoftwareEngineering/main-service.git
+```
+
+Python>=3.10. Проверить версию python:
+
+```
+python --version
+```
+
+Создать виртуальное окружение. Если выберите имя отличное от `.venv` или `venv`, не забудьте добавить его
+в `.gitignore`.
+
+```
+cd main-service/src/
+
+python -m pip install -U pip
+pip install -U virtualenv
+
+python -m venv .venv
+```
+
+Альтернативный способ создания вирутуального окружения - воспользоваться пользовательским интерфесом PyCharm
+при создании нового проекта.
+
+Установить зависимости
+
+```
+.\.venv\Scripts\activate
+
+pip install -r requirements.dev.txt
+```
+
+Создать файл `.env` и заполнить его по аналогии с `.env.example`
+
+Запустить FastAPI приложение:
+
+```
+uvicorn app.main:app --reload 
+
+# или
+
+python -m uvicorn app.main:app --reload 
+```
+
+Проверить работоспособность приложения, перейдя по ссылке `http://127.0.0.1:8000/docs` (у вас может быть другая)
+
+```
+...
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [13520] using StatReload
+...
+```
 
 [//]: # (Спроектировать и задокументировать дизайн API домена проектов)
 
 [//]: # ()
+
 [//]: # (Спроектировать и задокументировать дизайн API домена ресурсов)
 
 ## Road Map
@@ -154,7 +211,7 @@ router = APIRouter(prefix=f"/projects", tags=["Projects"])
 
 @router.get("/{project_id}", response_model=ProjectRead)  # схема ответа
 def get_project(
-    project_id: int,
+        project_id: int,
 ):
     pass  # реализация на данном этапе не нужна
 
