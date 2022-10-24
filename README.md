@@ -83,7 +83,7 @@
 git clone https://github.com/FASoftwareEngineering/main-service.git
 ```
 
-- [локальный запуск](#локальный-запуск)
+- [Локальный запуск](#локальный-запуск)
 - [Docker](#docker)
 
 ### Локальный запуск
@@ -163,6 +163,14 @@ alembic upgrade head
 ```
 
 > Для продвинутого использования [alembic](https://alembic.sqlalchemy.org/en/latest/): `alembic --help`
+
+## Процесс разработки
+
+> TODO
+
+## Полезные ресурсы
+
+> TODO
 
 [//]: # (Спроектировать и задокументировать дизайн API домена проектов)
 
