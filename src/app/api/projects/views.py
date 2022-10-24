@@ -32,6 +32,7 @@ def valid_project_id(project_id: int, crud: CRUD[models.Project] = Depends(get_c
 def get_project(
     project: models.Project = Depends(valid_project_id),
 ):
+    print(project.__dict__)  # Just for testing
     return project
 
 
