@@ -94,8 +94,7 @@ Python>=3.10. Проверить версию python:
 python --version
 ```
 
-Создать виртуальное окружение. Если выберите имя отличное от `.venv` или `venv`, не забудьте добавить его
-в `.gitignore`.
+Создать виртуальное окружение. Если выберите имя отличное от `.venv` или `venv` - не забудьте добавить его в `.gitignore`.
 
 ```
 cd main-service/src/
@@ -106,7 +105,7 @@ pip install -U virtualenv
 python -m venv .venv
 ```
 
-> Альтернативный способ создания вирутуального окружения - воспользоваться пользовательским интерфесом PyCharm
+> Альтернативный способ создания виртуального окружения - воспользоваться пользовательским интерфесом PyCharm
 > при создании нового проекта.
 
 Установить зависимости:
@@ -118,18 +117,15 @@ pip install -r requirements.dev.txt
 
 > Продвинутый способ управления зависимостями - [poetry](https://python-poetry.org/).
 
-Создать файл `.env` и заполнить его по аналогии с `.env.example`.
+Создать файл `.env` в корне проекта (`main-service/.env`) и заполнить его по аналогии с `.env.example`.
 
 Запустить [FastAPI](https://fastapi.tiangolo.com/tutorial/first-steps/) приложение:
 
 ```
-uvicorn app.main:app --reload 
-# или
-python -m uvicorn app.main:app --reload 
+uvicorn app.main:app --port 8000 --reload --env-file ../.env
 ```
 
-Проверить работоспособность приложения, перейдя по ссылке `http://127.0.0.1:8000/docs` (у вас может быть
-другая).
+FastAPI приложение будет доступно по адресу: http://127.0.0.1:8000
 
 ```
 ...
@@ -141,48 +137,84 @@ INFO:     Started reloader process [13520] using StatReload
 ### Docker
 
 Вам необходимы 2 вещи: 
-- .env файл в папке проекта (можно получить у @GeorgiyDemo)
-- Установленный docker и docker-compose
+- `.env` файл в корне проекта (можно получить у [@GeorgiyDemo](https://github.com/GeorgiyDemo))
+- установленный docker и docker-compose
 
 Сама развертка решения осуществляется в папке проекта следующим образом:
+
 ```
-docker-compose up -d
+docker-compose --env-file .env up -d
 ```
 
 После чего будут развернуты необходимые контейнеры для работы решения.
-Для проверки развертки можно воспользоваться командой
+Для проверки развертки можно воспользоваться командой:
+
 ```
 docker ps
 ```
 На output должны вывестись N контейнеров
 
-FastAPI будет доступен по URL: http://127.0.0.1:80/
+FastAPI приложение будет доступно по адресу: http://127.0.0.1:80
 
 ### Команды, используемые в разработке
 
-Запуск FastAPI приложения:
+FastAPI: [запуск приложения](https://fastapi.tiangolo.com/deployment/manually/#run-a-server-manually-uvicorn)
 
 ```
 uvicorn app.main:app --reload 
 ```
 
-Создание миграций:
+[Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html): создание миграций
 
 ```
 alembic revision --autogenerate
 ```
 
-Применение миграций:
+[Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html): применение миграций
 
 ```
 alembic upgrade head
 ```
 
-> Для продвинутого использования [alembic](https://alembic.sqlalchemy.org/en/latest/): `alembic --help`
+Pytest: [запуск тестов](https://docs.pytest.org/en/6.2.x/usage.html)
 
-## Процесс разработки
+```
+pytest tests/
+```
 
-> TODO
+Pytest: [генерация отчета о тестовом покрытии](https://pytest-cov.readthedocs.io/en/latest/reporting.html)
+
+```
+pytest --cov-report html --cov=app tests/
+```
+
+## Как мы работаем
+
+### Разработка
+
+Основной flow для работы с репозиторием и кодом приложения.
+ 
+**Шаги:**
+
+1. создается **Issue** с описанием нового функционала или ошибки (или выбирается уже имеющееся)
+2. создается ветка на основе `develop` для выполнения задачи/части подзадач и связывается с соответствующим **Issue**
+3. по завершению работы создается **Pull request (PR)** и назначается проверяющий (**Reviewers**) и ответственный за слияние (**Assignees**) - обычно один и тот же человек, но не автор **PR**
+4. если все хорошо, ответственный за слияние **PR** выполняет **Merge pull request** (при необходимости можно использовать режим **Squash and merge**)
+
+**Соглашение об именах веток:**
+- `feature/<meaningful-name>` - ветки функциональностей - используются для разработки новых функций. Могут поражаться из ветки `develop` или других `feature/` веток
+- `fix/<meaningful-name|issue id>` - ветки исправлений - используются для немедленного исправления ошибок. Могут поражаться из `main` или `develop` 
+
+### Инфраструктура и администрирование
+
+В отличие от flow [Разработка](#разработка) допускается самостоятельное слияние ветки в `main`.  
+
+**Соглашение об именах веток:**
+
+- `general/<meaningful-name>` - документация, изменения файлы, не связанных с кодом приложения. Может поражаться из `main`
+- `devops/<meaningful-name>` - изменения конфигураций, скриптов сборки, CI/CD. Может поражаться из `main`
+
+> Если вы один работаете над веткой, то для поддержания ее актуальности относительно `main` предпочтительнее использовать `git rebase` вместо `git merge`.
 
 ## Полезные ресурсы
 
@@ -201,11 +233,7 @@ alembic upgrade head
 - [apiestas](https://github.com/franloza/apiestas)
 - [FastAPI-template](https://github.com/s3rius/FastAPI-template)
 
-[//]: # (Спроектировать и задокументировать дизайн API домена проектов)
-
-[//]: # ()
-
-[//]: # (Спроектировать и задокументировать дизайн API домена ресурсов)
+---
 
 ## Road Map
 
