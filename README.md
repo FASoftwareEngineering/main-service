@@ -139,6 +139,28 @@ INFO:     Started reloader process [13520] using StatReload
 
 > TODO
 
+### Команды, используемые в разработке
+
+Запуск FastAPI приложения:
+
+```
+uvicorn app.main:app --reload 
+```
+
+Создание миграций:
+
+```
+alembic revision --autogenerate
+```
+
+Применение миграций:
+
+```
+alembic upgrade head
+```
+
+> Для продвинутого использования [alembic](https://alembic.sqlalchemy.org/en/latest/): `alembic --help`
+
 [//]: # (Спроектировать и задокументировать дизайн API домена проектов)
 
 [//]: # ()
