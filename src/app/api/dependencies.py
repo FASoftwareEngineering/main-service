@@ -19,5 +19,7 @@ class PaginationQuery(BaseSchema):
     limit: int | None = None
 
 
-def pagination_query(offset: int | None = Query(None), limit: int | None = Query(None)) -> PaginationQuery:
+def pagination_query(
+    offset: int | None = Query(None), limit: int | None = Query(None)
+) -> PaginationQuery:
     return PaginationQuery(offset=offset, limit=limit)
