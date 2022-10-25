@@ -63,7 +63,7 @@ def create_project(
 def close_project(
     project_id: int,
 ):
-         pass
+    pass
 
 
 @router.patch("/{project_id}", response_model=schemas.ProjectRead)
