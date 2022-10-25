@@ -24,8 +24,8 @@ __all__ = [
 ]
 
 engine = sa.create_engine(
-    config.SERVER_POSTGRES_CONNECTION,
-    echo=True,
+    config.SQLALCHEMY_DATABASE_URI,
+    echo=config.SQLALCHEMY_ECHO,
     future=True,
 )
 
