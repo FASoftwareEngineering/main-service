@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from app.core.db import BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin, StrSizes
 
-__all__ = ['Skill', 'Level']
+__all__ = ["Skill", "Level"]
 
 
 class Skill(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):

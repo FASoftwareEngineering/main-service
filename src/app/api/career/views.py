@@ -22,7 +22,6 @@ def get_skills():
 @skills_router.post("", response_model=schemas.SkillsRead, status_code=status.HTTP_201_CREATED)
 def create_skill(
     data: schemas.SkillsCreate,
-
 ):
     pass
 
@@ -37,7 +36,6 @@ def update_skill(
 @skills_router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_skill(
     skill_id: int,
-
 ):
     pass
 
@@ -57,12 +55,11 @@ def get_levels():
 @levels_router.post("", response_model=schemas.LevelsRead, status_code=status.HTTP_201_CREATED)
 def create_level(
     data: schemas.LevelsCreate,
-
 ):
     pass
 
 
-@levels_router.patch("/{level_id}", response_model=schemas.levelsRead)
+@levels_router.patch("/{level_id}", response_model=schemas.LevelsRead)
 def update_level(
     data: schemas.LevelsUpdate,
 ):
@@ -72,6 +69,5 @@ def update_level(
 @levels_router.delete("/{level_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_level(
     level_id: int,
-
 ):
     pass

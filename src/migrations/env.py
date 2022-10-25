@@ -15,6 +15,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from app.config import config as app_config  # noqa
+
 config.set_main_option("sqlalchemy.url", app_config.SQLALCHEMY_DATABASE_URI)
 
 # add your model's MetaData object here
@@ -24,6 +25,7 @@ config.set_main_option("sqlalchemy.url", app_config.SQLALCHEMY_DATABASE_URI)
 
 from app.core.db import BaseModel  # noqa
 from app.models import *  # noqa
+
 target_metadata = BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -70,9 +72,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

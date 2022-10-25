@@ -5,11 +5,11 @@ class Prefixes(str, Enum):
     projects = "projects"
     employees = "employees"
     skills = "skills"
-    levels = 'levels'
+    levels = "levels"
 
 
 class Tags(str, Enum):
     projects = "Projects"
     employees = "Employees"
     skills = "Skills"
-    level = "Levels"
+    levels = "Levels"
