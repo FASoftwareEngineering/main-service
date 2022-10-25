@@ -3,6 +3,5 @@ htmlcov/
 .coverage
 database.db
 
-
 /.venv/
 /venv/
