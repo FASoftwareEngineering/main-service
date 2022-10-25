@@ -17,6 +17,8 @@ class Employee(User):
     manager: "Employee" = relationship("Employee", remote_side="Employee.id", back_populates="employees")
     employees: list["Employee"] = relationship("Employee", back_populates="manager")
 
+    grades_to_roles_id: int = sa.Column(sa.ForeignKey("grades_to_roles.id", ondelete="SET NULL"))
+
     __mapper_args__ = {
         "polymorphic_identity": UserTypes.employee,
     }
