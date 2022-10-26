@@ -59,6 +59,7 @@ def create_project(
         project = models.Project(**data.dict())
         return crud.save(project)
 
+
 @router.post("/{project_id}/close", response_model=schemas.ProjectRead, status_code=status.HTTP_200_OK)
 def close_project(
     project_id: int,
