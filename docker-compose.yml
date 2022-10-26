@@ -1,48 +1,52 @@
-version: '3.5'
+version: "3.9"
 
 services:
   postgres:
     container_name: postgres_container
     image: postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DOCKER_POSTGRES_DB}
+      POSTGRES_USER: ${DOCKER_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DOCKER_POSTGRES_PASSWORD}
       PGDATA: /data/postgres
-    volumes:
-      - ./database/postgres:/data/postgres
+
     ports:
       - "5433:5432"
-    restart: unless-stopped
+    volumes:
+      - ./database/postgres:/data/postgres
     networks:
       - mynetwork
 
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
+    restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${DOCKER_PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - ./database/pgadmin:/root/.pgadmin
 
     ports:
       - "5050:80"
-    restart: unless-stopped
+    volumes:
+      - ./database/pgadmin:/root/.pgadmin
     networks:
       - mynetwork
 
   fastapi:
     build: src/.
+    restart: on-failure
+    env_file:
+      - .env
     ports:
       - "80:80"
-    restart: on-failure
-    environment:
-      SERVER_POSTGRES_CONNECTION: ${SERVER_POSTGRES_CONNECTION}
     volumes:
       - ./src/app/:/src/app/
     networks:
       - mynetwork
+    depends_on:
+      - postgres
 
 networks:
   mynetwork:

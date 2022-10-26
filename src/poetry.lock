@@ -743,6 +743,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "psycopg2"
+version = "2.9.4"
+description = "psycopg2 - Python-PostgreSQL Database Adapter"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "py"
 version = "1.11.0"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
@@ -1179,7 +1187,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "12e62645412a729d1ee5865edb2dc0933c914964b10352ecbdd39cb15ca811f4"
+content-hash = "8d41475a03b9e26883f3fec6887dc1bc10aac7df9b56ddfd5b43eea0eae1d141"
 
 [metadata.files]
 aiohttp = []
@@ -1304,6 +1312,7 @@ pluggy = [
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
 psycopg-binary = []
+psycopg2 = []
 py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
