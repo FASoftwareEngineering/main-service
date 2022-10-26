@@ -1,4 +1,5 @@
 import typing as t
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, status
 from pydantic import parse_obj_as
@@ -7,6 +8,7 @@ from app.api.constants import Prefixes, Tags
 from app.api.dependencies import get_session, PaginationQuery, pagination_query
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.projects import models, services, schemas
+from app.api.projects.constants import ProjectStatuses
 from app.api.services import CRUD
 from app.core.db import SessionT
 
@@ -83,3 +85,15 @@ def delete_project(
         ok = crud.delete_by_id(project_id)
     if not ok:
         raise_404(project_id)
+
+
+@router.get("", response_model=list[schemas.ProjectRead])
+def get_filtered_projects(
+    code: str = None,
+    name: str = None,
+    status: ProjectStatuses = None,
+    start_date: datetime = None,
+    end_date: datetime = None,
+    contract_price: float = None,
+):
+    pass
