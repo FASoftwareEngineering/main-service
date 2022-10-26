@@ -1,7 +1,6 @@
 from sqlalchemy import sql
 
-from app.api.employees import models
-from app.api.employees.schemas import EmployeeFilterParams
+from app.api.employees import models, schemas
 from app.api.services import CRUD
 from app.core.db import SessionT
 
@@ -10,8 +9,11 @@ def crud_factory(session: SessionT) -> CRUD[models.Employee]:
     return CRUD(session, models.Employee)
 
 
-def get_employees_by(
-    session: SessionT, by: EmployeeFilterParams, offset: int, limit: int
+def get_employees_with_pagination_by(
+    session: SessionT,
+    by: schemas.EmployeeFilterQuery,
+    offset: int,
+    limit: int,
 ) -> tuple[list[models.Employee], int]:
     param_to_column_map = {
         "email": models.Employee.email,
@@ -21,8 +23,8 @@ def get_employees_by(
         "middle_name": models.Employee.middle_name,
         "first_name": models.Employee.first_name,
     }
-    clause = sql.true()
 
+    clause = sql.true()
     for p, v in by.dict(exclude_defaults=True).items():
         clause &= param_to_column_map[p] == v
 
