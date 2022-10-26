@@ -19,9 +19,8 @@ class User(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
     first_name: str = sa.Column(sa.String(StrSizes.SM), nullable=False)
     last_name: str = sa.Column(sa.String(StrSizes.SM), nullable=False)
     middle_name: str = sa.Column(sa.String(StrSizes.SM))
-
-    email: str = sa.Column(sa.String(StrSizes.SM))
-    phone: str = sa.Column(sa.String(StrSizes.SM))
+    email: str = sa.Column(sa.String(StrSizes.SM), unique=True, nullable=False)
+    phone: str = sa.Column(sa.String(StrSizes.SM), unique=True, nullable=False)
 
     __mapper_args__ = {
         "polymorphic_on": type,
