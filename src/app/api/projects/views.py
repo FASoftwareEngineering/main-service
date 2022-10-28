@@ -43,7 +43,11 @@ def get_projects_with_pagination_and_filters(
     session: SessionT = Depends(get_session),
 ):
     projects, total = services.get_projects_by(
-        session, simple_search_q, complex_search_q, page_q.offset, page_q.limit
+        session,
+        simple_search_q,
+        complex_search_q,
+        page_q.offset,
+        page_q.limit,
     )
     return schemas.ProjectPagination(
         offset=page_q.offset,
