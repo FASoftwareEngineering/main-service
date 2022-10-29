@@ -23,7 +23,18 @@ class UserUpdate(UserBase):
     sso_id: str | None = None
     email: str | None = None
     phone: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
 
 
 class UserRead(UserBase):
     id: int
+
+
+class UserFilterQuery(BaseSchema):
+    type: PublicUserTypes | None = None
+    sso_id: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None

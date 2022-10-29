@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
 from app.api.constants import Prefixes, Tags
 from app.api.users import schemas
@@ -14,7 +14,9 @@ def get_user(
 
 
 @router.get("", response_model=list[schemas.UserRead])
-def get_users():
+def get_users_with_filters(
+    filter_q: schemas.UserFilterQuery = Depends(),
+):
     pass
 
 
