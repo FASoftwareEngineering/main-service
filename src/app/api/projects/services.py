@@ -17,7 +17,7 @@ def get_projects_with_pagination_by(
 ) -> tuple[list[models.Project], int]:
     clause = sql.true()
 
-    param_column_eq_map = {
+    param_col_eq_map = {
         "code": models.Project.code,
         "name": models.Project.name,
         "status": models.Project.status,
@@ -27,12 +27,12 @@ def get_projects_with_pagination_by(
         "manager_id": models.Project.manager_id,
     }
     eq_params = by.dict(
-        include=param_column_eq_map.keys(),
+        include=param_col_eq_map.keys(),
         exclude_unset=True,
         exclude_defaults=True,
     )
     for p, v in eq_params.items():
-        clause &= param_column_eq_map[p] == v
+        clause &= param_col_eq_map[p] == v
 
     if by.start_date_lte is not None:
         clause &= models.Project.start_date <= by.start_date_lte
@@ -49,7 +49,7 @@ def get_projects_with_pagination_by(
     if by.contract_price_gte is not None:
         clause &= models.Project.contract_price >= by.contract_price_gte
 
-    stmt = sql.select(models.Project).where(clause).offset(offset).limit(limit)  # type: ignore
+    stmt = sql.select(models.Project).where(clause).offset(offset).limit(limit)
 
     total = session.scalar(sql.select(sql.func.count()).select_from(stmt))
     return session.scalars(stmt).all(), total

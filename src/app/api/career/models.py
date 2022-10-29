@@ -62,11 +62,6 @@ class Skill(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
     name: str = sa.Column(sa.String(StrSizes.SM), unique=True, nullable=False)
     max_score: int = sa.Column(sa.Integer, nullable=False)
 
-    employees: list["Employee"] = relationship(
-        "Employee",
-        secondary="employee_skill_link",
-        back_populates="skills",
-    )
     employee_records: list["EmployeeSkillLink"] = relationship(
         "EmployeeSkillLink",
         back_populates="skill",

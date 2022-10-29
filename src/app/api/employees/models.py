@@ -36,11 +36,6 @@ class Employee(User):
         secondary="employee_role_grade_link",
         back_populates="employees",
     )
-    skills: list["Skill"] = relationship(
-        "Skill",
-        secondary="employee_skill_link",
-        back_populates="employees",
-    )
     skill_records: list["EmployeeSkillLink"] = relationship(
         "EmployeeSkillLink",
         back_populates="employee",

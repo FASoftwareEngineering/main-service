@@ -94,6 +94,8 @@ class EmployeeFilterQuery(_EmployeeFilterQuery):
     skill_ids: list[int] | None = None
 
 
+# Список значений для параметра: ?param=1&param=2&param=3&...
+# https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#query-parameter-list-multiple-values
 def employee_filter_query(
     skill_ids: list[int] | None = Query(default=None, alias="skill_id"),
     filter_q: _EmployeeFilterQuery = Depends(),

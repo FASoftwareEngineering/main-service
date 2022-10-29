@@ -38,9 +38,9 @@ pylint = "^2.15.5"
 black = { extras = ["d"], version = "^22.10.0" }
 isort = "^5.10.1"
 bandit = "^1.7.4"
-mypy = "^0.982"
-sqlalchemy-stubs = "^0.4"
 pre-commit = "^2.20.0"
+mypy = "^0.982"
+sqlalchemy2-stubs = "^0.0.2-alpha.29"
 
 [tool.poetry.scripts]
 example = "app.cli:example"
