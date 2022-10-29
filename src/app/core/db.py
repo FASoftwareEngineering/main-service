@@ -25,7 +25,7 @@ __all__ = [
 
 engine = sa.create_engine(
     config.SQLALCHEMY_DATABASE_URI,
-    echo=True,
+    echo=config.SQLALCHEMY_ECHO,
     future=True,
 )
 

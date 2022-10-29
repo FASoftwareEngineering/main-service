@@ -46,7 +46,13 @@ def upgrade() -> None:
         sa.Column("sso_id", sa.String(length=36), nullable=True),
         sa.Column(
             "type",
-            sa.Enum("employee", "manager", "project_owner", "project_manager", name="usertypes"),
+            sa.Enum(
+                "employee",
+                "manager",
+                "project_owner",
+                "project_manager",
+                name="usertypes",
+            ),
             nullable=True,
         ),
         sa.Column("first_name", sa.String(length=32), nullable=False),
