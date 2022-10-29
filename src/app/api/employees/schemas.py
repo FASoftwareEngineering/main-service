@@ -4,16 +4,6 @@ from app.api.schemas import PaginationSchema
 from app.core.schemas import BaseSchema
 
 
-class EmployeeCareerCreate(BaseSchema):
-    role_id: int
-    grade_id: int
-    skill_ids: list[int] = []
-
-
-class EmployeeCareerUpdate(EmployeeCareerCreate):
-    pass
-
-
 class CareerRoleRead(BaseSchema):
     id: int
     name: str
@@ -29,6 +19,21 @@ class CareerSkillRead(BaseSchema):
     name: int
     score: int
     max_score: int
+
+
+class CareerSkillCreate(BaseSchema):
+    id: int
+    score: int
+
+
+class EmployeeCareerCreate(BaseSchema):
+    role_id: int
+    grade_id: int
+    skills: list[CareerSkillCreate] = []
+
+
+class EmployeeCareerUpdate(EmployeeCareerCreate):
+    pass
 
 
 class EmployeeCareerRead(BaseSchema):
