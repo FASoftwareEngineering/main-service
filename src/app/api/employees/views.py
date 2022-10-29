@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, status
 from pydantic import parse_obj_as
 
 from app.api.constants import Prefixes, Tags
-from app.api.exceptions import raise_404 as _raise_404
-from app.api.services import CRUD
 from app.api.dependencies import get_session, PaginationQuery, pagination_query
 from app.api.employees import schemas, services, models
+from app.api.exceptions import raise_404 as _raise_404
+from app.api.services import CRUD
 from app.core.db import SessionT
 
 router = APIRouter(prefix=f"/{Prefixes.employees}", tags=[Tags.employees])
@@ -38,11 +38,14 @@ def get_employee(
 @router.get("", response_model=schemas.EmployeePagination)
 def get_employees_with_pagination_and_filters(
     page_q: PaginationQuery = Depends(pagination_query),
-    filter_q: schemas.EmployeeFilterQuery = Depends(),
+    filter_q: schemas.EmployeeFilterQuery = Depends(schemas.employee_filter_query),
     session: SessionT = Depends(get_session),
 ):
     employees, total = services.get_employees_with_pagination_by(
-        session, filter_q, page_q.offset, page_q.limit
+        session,
+        filter_q,
+        page_q.offset,
+        page_q.limit,
     )
     return schemas.EmployeePagination(
         offset=page_q.offset,
@@ -72,7 +75,6 @@ def create_employee(
     crud: CRUD[models.Employee] = Depends(get_crud),
 ):
     with session.begin():
-        # todo: подумать над sso_id
         employee = models.Employee(**data.dict())
         return crud.save(employee)
 

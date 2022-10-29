@@ -1114,15 +1114,14 @@ pymysql = ["pymysql (<1)", "pymysql"]
 sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
-name = "sqlalchemy-stubs"
-version = "0.4"
-description = "SQLAlchemy stubs and mypy plugin"
+name = "sqlalchemy2-stubs"
+version = "0.0.2a29"
+description = "Typing Stubs for SQLAlchemy 1.4"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-mypy = ">=0.790"
 typing-extensions = ">=3.7.4"
 
 [[package]]
@@ -1312,7 +1311,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "005a2799dd4f9b3c72499a2a36953d61f4514a16d7aba86dfbcbd99ca86c303d"
+content-hash = "a1800052365f8399e08058375fc4f3014d9aa46ea7c423eaea2dc4fe026618aa"
 
 [metadata.files]
 aiohttp = []
@@ -1471,7 +1470,7 @@ sniffio = []
 snowballstemmer = []
 sortedcontainers = []
 sqlalchemy = []
-sqlalchemy-stubs = []
+sqlalchemy2-stubs = []
 starlette = []
 stevedore = []
 toml = []

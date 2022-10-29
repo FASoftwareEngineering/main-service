@@ -1,8 +1,13 @@
 from app.core.schemas import BaseSchema
 
 
+class RoleGradeID(BaseSchema):
+    id: int
+
+
 class RoleBase(BaseSchema):
     name: str
+    grades: list[RoleGradeID] = []
 
 
 class RoleCreate(RoleBase):

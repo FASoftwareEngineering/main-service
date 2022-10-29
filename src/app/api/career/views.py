@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, status
 
 from app.api.career import schemas
@@ -17,7 +15,7 @@ def get_role(
     pass
 
 
-@roles_router.get("", response_model=List[schemas.RoleRead])
+@roles_router.get("", response_model=list[schemas.RoleRead])
 def get_roles():
     pass
 
@@ -50,7 +48,7 @@ def get_grade(
     pass
 
 
-@grades_router.get("", response_model=List[schemas.GradeRead])
+@grades_router.get("", response_model=list[schemas.GradeRead])
 def get_grades():
     pass
 
