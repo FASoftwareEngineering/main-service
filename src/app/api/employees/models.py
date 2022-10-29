@@ -9,6 +9,7 @@ from app.api.users.models import User
 if t.TYPE_CHECKING:
     from app.api.career.models import RoleGradeLink, Skill
     from app.api.models import EmployeeSkillLink
+    from app.api.projects.models import Project
 
 __all__ = [
     "Employee",
@@ -43,6 +44,12 @@ class Employee(User):
     skill_records: list["EmployeeSkillLink"] = relationship(
         "EmployeeSkillLink",
         back_populates="employee",
+    )
+
+    projects: list["Project"] = relationship(
+        "Project",
+        secondary="project_resource_link",
+        back_populates="resources",
     )
 
     __mapper_args__ = {

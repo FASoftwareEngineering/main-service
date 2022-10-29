@@ -41,7 +41,7 @@ class EmployeeManagerRead(BaseSchema):
     id: int
     first_name: str
     last_name: str
-    middle_name: str
+    middle_name: str | None = None
     email: str
     phone: str
 

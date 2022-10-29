@@ -1,5 +1,6 @@
-import sqlalchemy as sa
 import typing as t
+
+import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
 from app.core.db import BaseModel, TimestampMixin
@@ -37,3 +38,10 @@ class EmployeeSkillLink(BaseModel, TimestampMixin):
         "Skill",
         back_populates="employee_records",
     )
+
+
+class ProjectResourceLink(BaseModel, TimestampMixin):
+    __tablename__ = "project_resource_link"
+
+    project_id: int = sa.Column(sa.ForeignKey("project.id", ondelete="CASCADE"), primary_key=True)
+    employee_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)

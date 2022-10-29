@@ -1,3 +1,4 @@
+import typing as t
 from datetime import datetime
 
 import sqlalchemy as sa
@@ -14,37 +15,46 @@ from app.core.db import (
     StrSizes,
 )
 
+if t.TYPE_CHECKING:
+    from app.api.employees.models import Employee
+
 __all__ = [
     "Project",
     "ProjectOwner",
     "ProjectManager",
-    "OwnersProjectsLink",
-    "ManagersProjectsLink",
 ]
 
 
 class Project(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "project"
 
+    owner_id: int = sa.Column(sa.ForeignKey("user.id"), nullable=False)
+    manager_id: int = sa.Column(sa.ForeignKey("user.id"))
+
     code: str = sa.Column(sa.String(StrSizes.XS), unique=True, nullable=False)
     name: str = sa.Column(sa.String(StrSizes.MD), nullable=False)
 
-    status: ProjectStatuses = sa.Column(sa.Enum(ProjectStatuses))
+    status: ProjectStatuses = sa.Column(sa.Enum(ProjectStatuses), default=ProjectStatuses.default)
 
     start_date: datetime = sa.Column(sa.DateTime)
     end_date: datetime = sa.Column(sa.DateTime)
 
     contract_price: float = sa.Column(sa.Float)
 
-    owners: list["ProjectOwner"] = relationship(
+    owner: "ProjectOwner" = relationship(
         "ProjectOwner",
-        secondary="owners_projects_link",
+        foreign_keys=[owner_id],
         back_populates="owned_projects",
     )
-    managers: list["ProjectManager"] = relationship(
+    manager: "ProjectManager" = relationship(
         "ProjectManager",
-        secondary="managers_projects_link",
+        foreign_keys=[manager_id],
         back_populates="managed_projects",
+    )
+    resources: list["Employee"] = relationship(
+        "Employee",
+        secondary="project_resource_link",
+        back_populates="projects",
     )
 
 
@@ -53,8 +63,8 @@ class Project(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
 class ProjectOwner(User):
     owned_projects: list["Project"] = relationship(
         "Project",
-        secondary="owners_projects_link",
-        back_populates="owners",
+        foreign_keys=[Project.owner_id],
+        back_populates="owner",
     )
 
     __mapper_args__ = {
@@ -67,30 +77,10 @@ class ProjectOwner(User):
 class ProjectManager(User):
     managed_projects: list["Project"] = relationship(
         "Project",
-        secondary="managers_projects_link",
-        back_populates="managers",
+        foreign_keys=[Project.manager_id],
+        back_populates="manager",
     )
 
     __mapper_args__ = {
         "polymorphic_identity": UserTypes.project_manager,
     }
-
-
-class OwnersProjectsLink(BaseModel):
-    __tablename__ = "owners_projects_link"
-
-    project_id: int = sa.Column(sa.ForeignKey("project.id", ondelete="CASCADE"), primary_key=True)
-    owner_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
-
-    start_date: datetime = sa.Column(sa.DateTime, default=datetime.utcnow, nullable=False)
-    end_date: datetime = sa.Column(sa.DateTime)
-
-
-class ManagersProjectsLink(BaseModel):
-    __tablename__ = "managers_projects_link"
-
-    project_id: int = sa.Column(sa.ForeignKey("project.id", ondelete="CASCADE"), primary_key=True)
-    manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
-
-    start_date: datetime = sa.Column(sa.DateTime, default=datetime.utcnow, nullable=False)
-    end_date: datetime = sa.Column(sa.DateTime)
