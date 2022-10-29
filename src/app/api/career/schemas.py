@@ -1,8 +1,15 @@
+from pydantic import PositiveInt
+
 from app.core.schemas import BaseSchema
+
+
+class RoleGradeID(BaseSchema):
+    id: int
 
 
 class RoleBase(BaseSchema):
     name: str
+    grades: list[RoleGradeID] = []
 
 
 class RoleCreate(RoleBase):
@@ -35,7 +42,7 @@ class GradeRead(GradeBase):
 
 class SkillBase(BaseSchema):
     name: str
-    max_score: int
+    max_score: PositiveInt
 
 
 class SkillCreate(SkillBase):
@@ -44,7 +51,7 @@ class SkillCreate(SkillBase):
 
 class SkillUpdate(SkillBase):
     name: str | None = None
-    max_score: int | None = None
+    max_score: PositiveInt | None = None
 
 
 class SkillRead(SkillBase):
