@@ -3,8 +3,8 @@ from typing import Generator
 from urllib.parse import urljoin
 
 import pytest
-from httpx import AsyncClient
 from factory import random
+from httpx import AsyncClient
 
 os.environ["APP_DEBUG"] = "False"
 os.environ["APP_DB_URI"] = "postgresql://postgres:postgres@127.0.0.1:5434/test_postgres"
@@ -34,7 +34,7 @@ def anyio_backend() -> str:
 @pytest.fixture(scope="module")
 async def client() -> Generator[AsyncClient, None, None]:
     async with AsyncClient(
-            app=app,
-            base_url=urljoin("http://127.0.0.1:8000", config.API_PREFIX),
+        app=app,
+        base_url=urljoin("http://127.0.0.1:8000", config.API_PREFIX),
     ) as client:
         yield client
