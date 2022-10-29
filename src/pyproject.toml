@@ -39,6 +39,7 @@ isort = "^5.10.1"
 bandit = "^1.7.4"
 mypy = "^0.982"
 sqlalchemy-stubs = "^0.4"
+factory-boy = "^3.2.1"
 
 [tool.poetry.scripts]
 example = "app.cli:example"

@@ -48,6 +48,23 @@ services:
     depends_on:
       - postgres
 
+  test_postgres:
+    container_name: test_postgres_container
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "test_postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: /data/test_postgres
+
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./database/test_postgres:/data/test_postgres
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
     driver: bridge
