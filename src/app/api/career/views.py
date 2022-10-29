@@ -9,8 +9,7 @@ from app.api.services import CRUD
 
 roles_router = APIRouter(prefix=f"/{Prefixes.roles}", tags=[Tags.roles])
 grades_router = APIRouter(prefix=f"/{Prefixes.grades}", tags=[Tags.grades])
-
-
+skills_router = APIRouter(prefix=f"/{Prefixes.skills}", tags=[Tags.skills])
 
 
 @roles_router.get("/{role_id}", response_model=schemas.RolesRead)
@@ -63,6 +62,12 @@ def get_grade(
         grade_id: int,
         # session: SessionT = Depends(get_session),
         # crud: CRUD[models.Grades] = Depends(get_crud),
+
+
+
+router.get("/{skill_id}", response_model=schemas.SkillsRead)
+def get_skill(
+    skill_id: int,
 ):
     pass
 
@@ -79,23 +84,45 @@ def create_grade(
         data: schemas.GradesReadradesCreate,
         # session: SessionT = Depends(get_session),
         # crud: CRUD[models.Grades] = Depends(get_crud),
-):
-    pass
-
-
+        
+        
 @grades_router.patch("/{grade_id}", response_model=schemas.GradesRead)
 def update_grade(
-        data: schemas.GradesUpdate,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Grades] = Depends(get_crud),
+      data: schemas.GradesUpdate,
+      # session: SessionT = Depends(get_session),
+      # crud: CRUD[models.Grades] = Depends(get_crud),
 ):
-    pass
-
-
+  pass
+        
+        
 @grades_router.delete("/{grade_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_grade(
         grade_id: int,
         # session: SessionT = Depends(get_session),
         # crud: CRUD[models.Grades] = Depends(get_crud),
+
+
+@skills_router.get("", response_model=list[schemas.SkillsRead])
+def get_skills():
+    pass
+
+
+@skills_router.post("", response_model=schemas.SkillsRead, status_code=status.HTTP_201_CREATED)
+def create_skill(
+    data: schemas.SkillsCreate,
+):
+    pass
+
+
+@skills_router.patch("/{skill_id}", response_model=schemas.SkillsRead)
+def update_skill(
+    data: schemas.SkillsUpdate,
+):
+    pass
+
+
+@skills_router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_skill(
+    skill_id: int,
 ):
     pass
