@@ -8,6 +8,7 @@ from app.api.users.models import User
 
 if t.TYPE_CHECKING:
     from app.api.career.models import RoleGradeLink, Skill
+    from app.api.models import EmployeeSkillLink
 
 __all__ = [
     "Employee",
@@ -19,8 +20,15 @@ __all__ = [
 class Employee(User):
     manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="SET NULL"))
 
-    manager: "Employee" = relationship("Employee", remote_side="Employee.id", back_populates="employees")
-    employees: list["Employee"] = relationship("Employee", back_populates="manager")
+    manager: "Employee" = relationship(
+        "Employee",
+        remote_side="Employee.id",
+        back_populates="employees",
+    )
+    employees: list["Employee"] = relationship(
+        "Employee",
+        back_populates="manager",
+    )
 
     role_grade_records: list["RoleGradeLink"] = relationship(
         "RoleGradeLink",
@@ -31,6 +39,10 @@ class Employee(User):
         "Skill",
         secondary="employee_skill_link",
         back_populates="employees",
+    )
+    skill_records: list["EmployeeSkillLink"] = relationship(
+        "EmployeeSkillLink",
+        back_populates="employee",
     )
 
     __mapper_args__ = {

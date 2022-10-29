@@ -1,6 +1,12 @@
 import sqlalchemy as sa
+import typing as t
+from sqlalchemy.orm import relationship
 
 from app.core.db import BaseModel, TimestampMixin
+
+if t.TYPE_CHECKING:
+    from app.api.employees.models import Employee
+    from app.api.career.models import Skill
 
 __all__ = [
     "EmployeeRoleGradeLink",
@@ -22,3 +28,12 @@ class EmployeeSkillLink(BaseModel, TimestampMixin):
     skill_id: int = sa.Column(sa.ForeignKey("skill.id", ondelete="CASCADE"), primary_key=True)
 
     score: int = sa.Column(sa.Integer, nullable=False)
+
+    employee: "Employee" = relationship(
+        "Employee",
+        back_populates="skill_records",
+    )
+    skill: "Skill" = relationship(
+        "Skill",
+        back_populates="employee_records",
+    )

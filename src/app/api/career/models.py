@@ -7,6 +7,7 @@ from app.core.db import BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDelete
 
 if t.TYPE_CHECKING:
     from app.api.employees.models import Employee
+    from app.api.models import EmployeeSkillLink
 
 __all__ = [
     "Role",
@@ -40,17 +41,19 @@ class Grade(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
     )
 
 
-class RoleGradeLink(BaseModel):
+class RoleGradeLink(BaseModel, SurrogateKeyMixin):
     __tablename__ = "role_grade_link"
 
-    role_id: int = sa.Column(sa.ForeignKey("role.id", ondelete="CASCADE"), primary_key=True)
-    grade_id: int = sa.Column(sa.ForeignKey("grade.id", ondelete="CASCADE"), primary_key=True)
+    role_id: int = sa.Column(sa.ForeignKey("role.id", ondelete="CASCADE"))
+    grade_id: int = sa.Column(sa.ForeignKey("grade.id", ondelete="CASCADE"))
 
     employees: list["Employee"] = relationship(
         "Employee",
         secondary="employee_role_grade_link",
         back_populates="role_grade_records",
     )
+
+    __table_args__ = (sa.UniqueConstraint("role_id", "grade_id"),)
 
 
 class Skill(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
@@ -63,4 +66,8 @@ class Skill(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
         "Employee",
         secondary="employee_skill_link",
         back_populates="skills",
+    )
+    employee_records: list["EmployeeSkillLink"] = relationship(
+        "EmployeeSkillLink",
+        back_populates="skill",
     )
