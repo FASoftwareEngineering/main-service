@@ -1,5 +1,3 @@
-from pydantic import PositiveInt
-
 from app.core.schemas import BaseSchema
 
 
@@ -42,7 +40,7 @@ class GradeRead(GradeBase):
 
 class SkillBase(BaseSchema):
     name: str
-    max_score: PositiveInt
+    max_score: int
 
 
 class SkillCreate(SkillBase):
@@ -51,7 +49,7 @@ class SkillCreate(SkillBase):
 
 class SkillUpdate(SkillBase):
     name: str | None = None
-    max_score: PositiveInt | None = None
+    max_score: int | None = None
 
 
 class SkillRead(SkillBase):
