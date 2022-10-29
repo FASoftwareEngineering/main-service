@@ -1,3 +1,4 @@
 # временные артифакты локальной разработки
 database.db
+migrations/versions
 app/sandbox/
