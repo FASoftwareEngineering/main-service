@@ -1,59 +1,51 @@
 from app.core.schemas import BaseSchema
 
 
-class RolesBase(BaseSchema):
+class RoleBase(BaseSchema):
     name: str
 
 
-class RolesCreate(RolesBase):
+class RoleCreate(RoleBase):
     pass
 
 
-class RolesUpdate(RolesBase):
+class RoleUpdate(RoleBase):
     name: str | None = None
 
 
-class RolesRead(RolesBase):
+class RoleRead(RoleBase):
     id: int
 
 
-class GradesBase(BaseSchema):
+class GradeBase(BaseSchema):
     name: str
 
 
-class GradesCreate(GradesBase):
+class GradeCreate(GradeBase):
     pass
 
 
-class GradesUpdate(GradesBase):
+class GradeUpdate(GradeBase):
     name: str | None = None
 
 
-class GradesRead(GradesBase):
+class GradeRead(GradeBase):
     id: int
 
 
-class GradesSchema(GradesBase):
-    authors: list[RolesBase]
-
-
-class RolesSchema(RolesBase):
-    books: list[GradesBase]
-
-
-class SkillsBase(BaseSchema):
+class SkillBase(BaseSchema):
     name: str
     max_score: int
 
 
-class SkillsCreate(SkillsBase):
+class SkillCreate(SkillBase):
     pass
 
 
-class SkillsUpdate(SkillsBase):
+class SkillUpdate(SkillBase):
     name: str | None = None
     max_score: int | None = None
 
 
-class SkillsRead(SkillsBase):
+class SkillRead(SkillBase):
     id: int

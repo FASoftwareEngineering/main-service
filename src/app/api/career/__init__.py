@@ -1,1 +1,1 @@
-from app.api.career.views import skills_router
+from app.api.career.views import roles_router, grades_router, skills_router

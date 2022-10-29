@@ -1,122 +1,103 @@
-from fastapi import APIRouter, status, Depends
-
-from app import models
-from app.api.constants import Prefixes, Tags
-from app.api.career import schemas
 from typing import List
 
-from app.api.services import CRUD
+from fastapi import APIRouter, status
+
+from app.api.career import schemas
+from app.api.constants import Prefixes, Tags
 
 roles_router = APIRouter(prefix=f"/{Prefixes.roles}", tags=[Tags.roles])
 grades_router = APIRouter(prefix=f"/{Prefixes.grades}", tags=[Tags.grades])
 skills_router = APIRouter(prefix=f"/{Prefixes.skills}", tags=[Tags.skills])
 
 
-@roles_router.get("/{role_id}", response_model=schemas.RolesRead)
+@roles_router.get("/{role_id}", response_model=schemas.RoleRead)
 def get_role(
-        role_id: int,
-        # session: SessionT = Depends(get_session),
-        crud: CRUD[models.Roles] = Depends(get_crud),
+    role_id: int,
 ):
     pass
 
 
-# поправить
-@roles_router.get("", response_model=List[schemas.RolesRead])
+@roles_router.get("", response_model=List[schemas.RoleRead])
 def get_roles():
-    # session: SessionT = Depends(get_session),
-    # crud: CRUD[models.Roles] = Depends(get_crud),
     pass
 
 
-@roles_router.post("", response_model=schemas.RolesRead, status_code=status.HTTP_201_CREATED)
+@roles_router.post("", response_model=schemas.RoleRead, status_code=status.HTTP_201_CREATED)
 def create_role(
-        data: schemas.RolesCreate,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Roles] = Depends(get_crud),
+    data: schemas.RoleCreate,
 ):
     pass
 
 
-@roles_router.patch("/{role_id}", response_model=schemas.RolesRead)
+@roles_router.patch("/{role_id}", response_model=schemas.RoleRead)
 def update_role(
-        data: schemas.RolesUpdate,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Roles] = Depends(get_crud),
+    data: schemas.RoleUpdate,
 ):
     pass
 
 
 @roles_router.delete("/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_role(
-        role_id: int,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Roles] = Depends(get_crud),
+    role_id: int,
 ):
     pass
 
 
-# grades
-@grades_router.get("/{grade_id}", response_model=schemas.GradesRead)
+@grades_router.get("/{grade_id}", response_model=schemas.GradeRead)
 def get_grade(
-        grade_id: int,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Grades] = Depends(get_crud),
+    grade_id: int,
+):
+    pass
 
 
+@grades_router.get("", response_model=List[schemas.GradeRead])
+def get_grades():
+    pass
 
-router.get("/{skill_id}", response_model=schemas.SkillsRead)
+
+@grades_router.post("", response_model=schemas.GradeRead, status_code=status.HTTP_201_CREATED)
+def create_grade(
+    data: schemas.GradeCreate,
+):
+    pass
+
+
+@grades_router.patch("/{grade_id}", response_model=schemas.GradeRead)
+def update_grade(
+    data: schemas.GradeUpdate,
+):
+    pass
+
+
+@grades_router.delete("/{grade_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_grade(
+    grade_id: int,
+):
+    pass
+
+
+@skills_router.get("/{skill_id}", response_model=schemas.SkillRead)
 def get_skill(
     skill_id: int,
 ):
     pass
 
 
-@grades_router.get("", response_model=List[schemas.GradesRead])
-def get_grades():
-    # session: SessionT = Depends(get_session),
-    # crud: CRUD[models.Grades] = Depends(get_crud),
-    pass
-
-
-@grades_router.post("", response_model=schemas.GradesRead, status_code=status.HTTP_201_CREATED)
-def create_grade(
-        data: schemas.GradesReadradesCreate,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Grades] = Depends(get_crud),
-        
-        
-@grades_router.patch("/{grade_id}", response_model=schemas.GradesRead)
-def update_grade(
-      data: schemas.GradesUpdate,
-      # session: SessionT = Depends(get_session),
-      # crud: CRUD[models.Grades] = Depends(get_crud),
-):
-  pass
-        
-        
-@grades_router.delete("/{grade_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_grade(
-        grade_id: int,
-        # session: SessionT = Depends(get_session),
-        # crud: CRUD[models.Grades] = Depends(get_crud),
-
-
-@skills_router.get("", response_model=list[schemas.SkillsRead])
+@skills_router.get("", response_model=list[schemas.SkillRead])
 def get_skills():
     pass
 
 
-@skills_router.post("", response_model=schemas.SkillsRead, status_code=status.HTTP_201_CREATED)
+@skills_router.post("", response_model=schemas.SkillRead, status_code=status.HTTP_201_CREATED)
 def create_skill(
-    data: schemas.SkillsCreate,
+    data: schemas.SkillCreate,
 ):
     pass
 
 
-@skills_router.patch("/{skill_id}", response_model=schemas.SkillsRead)
+@skills_router.patch("/{skill_id}", response_model=schemas.SkillRead)
 def update_skill(
-    data: schemas.SkillsUpdate,
+    data: schemas.SkillUpdate,
 ):
     pass
 
