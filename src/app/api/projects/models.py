@@ -63,7 +63,7 @@ class Project(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
 class ProjectOwner(User):
     owned_projects: list["Project"] = relationship(
         "Project",
-        foreign_keys=[Project.owner_id],
+        foreign_keys="[Project.owner_id]",
         back_populates="owner",
     )
 
@@ -77,7 +77,7 @@ class ProjectOwner(User):
 class ProjectManager(User):
     managed_projects: list["Project"] = relationship(
         "Project",
-        foreign_keys=[Project.manager_id],
+        foreign_keys="[Project.manager_id]",
         back_populates="manager",
     )
 
