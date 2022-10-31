@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class Prefixes(str, Enum):
+    users = "users"
     projects = "projects"
     employees = "employees"
     roles = "roles"
@@ -10,6 +11,7 @@ class Prefixes(str, Enum):
 
 
 class Tags(str, Enum):
+    users = "Users"
     projects = "Projects"
     employees = "Employees"
     roles = "Roles"
