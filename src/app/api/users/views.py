@@ -61,14 +61,12 @@ def create_user(
 def update_user(
     data: schemas.UserUpdate,
     user: models.User = Depends(valid_user_id),
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.User] = Depends(get_crud),
 ):
     for attr, value in data.dict(exclude_unset=True).items():
         setattr(user, attr, value)
 
-    session.add(user)
-    session.commit()
-    return user
+    return crud.save(user)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)

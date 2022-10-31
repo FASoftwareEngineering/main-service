@@ -54,16 +54,14 @@ def get_projects_with_pagination_and_filters(
 def create_project(
     data: schemas.ProjectCreate,
     session: SessionT = Depends(get_session),
+    crud: CRUD[models.Project] = Depends(get_crud),
 ):
     new_data = data.dict()
     resource_ids = [res.id for res in data.resources]
     new_data["resources"] = get_employees_by_ids(session, resource_ids)
 
     project = models.Project(**new_data)
-
-    session.add(project)
-    session.commit()
-    return project
+    return crud.save(project)
 
 
 @router.patch("/{project_id}", response_model=schemas.ProjectRead)
@@ -71,6 +69,7 @@ def update_project(
     data: schemas.ProjectUpdate,
     project: models.Project = Depends(valid_project_id),
     session: SessionT = Depends(get_session),
+    crud: CRUD[models.Project] = Depends(get_crud),
 ):
     new_data = data.dict(exclude_unset=True)
     if "resources" in new_data:
@@ -80,9 +79,7 @@ def update_project(
     for attr, value in new_data.items():
         setattr(project, attr, value)
 
-    session.add(project)
-    session.commit()
-    return project
+    return crud.save(project)
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)

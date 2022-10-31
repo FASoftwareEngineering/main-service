@@ -42,17 +42,16 @@ def create_user(session: SessionT, data: schemas.UserCreate) -> models.User:
     if data.type == constants.PublicUserTypes.employee:
         return create_employee(session, data)
 
-    user = models.User(**data.dict())
     try:
-        session.add(user)
-        session.commit()
+        crud = crud_factory(session)
+        user = models.User(**data.dict())
+        return crud.save(user)
     # TODO: создать свое исключение, обработать его во view
     except exc.IntegrityError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"msg": e.orig.diag.message_detail},
         )
-    return user
 
 
 # TODO: подумать над реализацией более очевидного поведения
@@ -63,9 +62,8 @@ def create_employee(session: SessionT, data: schemas.UserCreate) -> models.User:
     else:
         user.sso_id = data.sso_id
 
-    session.add(user)
-    session.commit()
-    return user
+    crud = crud_factory(session)
+    return crud.save(user)
 
 
 def get_employee_by_email(session: SessionT, email: str) -> models.User | None:

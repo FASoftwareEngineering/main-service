@@ -41,16 +41,14 @@ def get_roles(
 def create_role(
     data: schemas.RoleCreate,
     session: SessionT = Depends(get_session),
+    crud: CRUD[models.Role] = Depends(get_roles_crud),
 ):
     new_data = data.dict()
     grade_ids = [grade.id for grade in data.grades]
     new_data["grades"] = services.get_grades_by_ids(session, grade_ids)
 
     role = models.Role(**new_data)
-
-    session.add(role)
-    session.commit()
-    return role
+    return crud.save(role)
 
 
 @roles_router.patch("/{role_id}", response_model=schemas.RoleRead)
@@ -58,6 +56,7 @@ def update_role(
     data: schemas.RoleUpdate,
     role: models.Role = Depends(valid_role_id),
     session: SessionT = Depends(get_session),
+    crud: CRUD[models.Role] = Depends(get_roles_crud),
 ):
     new_data = data.dict(exclude_unset=True)
     if "grades" in new_data:
@@ -67,9 +66,7 @@ def update_role(
     for attr, value in new_data.items():
         setattr(role, attr, value)
 
-    session.add(role)
-    session.commit()
-    return role
+    return crud.save(role)
 
 
 @roles_router.delete("/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -112,26 +109,21 @@ def get_grades(
 @grades_router.post("", response_model=schemas.GradeRead, status_code=status.HTTP_201_CREATED)
 def create_grade(
     data: schemas.GradeCreate,
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Grade] = Depends(get_grades_crud),
 ):
     grade = models.Grade(**data.dict())
-    session.add(grade)
-    session.commit()
-    return grade
+    return crud.save(grade)
 
 
 @grades_router.patch("/{grade_id}", response_model=schemas.GradeRead)
 def update_grade(
     data: schemas.GradeUpdate,
     grade: models.Grade = Depends(valid_grade_id),
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Grade] = Depends(get_grades_crud),
 ):
     for attr, value in data.dict(exclude_unset=True).items():
         setattr(grade, attr, value)
-
-    session.add(grade)
-    session.commit()
-    return grade
+    return crud.save(grade)
 
 
 @grades_router.delete("/{grade_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -174,26 +166,21 @@ def get_skills(
 @skills_router.post("", response_model=schemas.SkillRead, status_code=status.HTTP_201_CREATED)
 def create_skill(
     data: schemas.SkillCreate,
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Skill] = Depends(get_skills_crud),
 ):
     skill = models.Skill(**data.dict())
-    session.add(skill)
-    session.commit()
-    return skill
+    return crud.save(skill)
 
 
 @skills_router.patch("/{skill_id}", response_model=schemas.SkillRead)
 def update_skill(
     data: schemas.SkillUpdate,
     skill: models.Skill = Depends(valid_skill_id),
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Skill] = Depends(get_skills_crud),
 ):
     for attr, value in data.dict(exclude_unset=True).items():
         setattr(skill, attr, value)
-
-    session.add(skill)
-    session.commit()
-    return skill
+    return crud.save(skill)
 
 
 @skills_router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
