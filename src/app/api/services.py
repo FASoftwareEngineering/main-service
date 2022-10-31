@@ -62,4 +62,8 @@ class CRUD(t.Generic[_M]):
 
         stmt = stmt.where(self.model_cls.id == id_)
         res = self.session.execute(stmt)
-        return res.rowcount > 0
+        return res.rowcount > 0  # type: ignore
+
+
+def count_rows(session: SessionT, stmt) -> int:
+    return session.scalar(sql.select(sql.func.count()).select_from(stmt))

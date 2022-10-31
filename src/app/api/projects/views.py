@@ -3,7 +3,7 @@ import typing as t
 from fastapi import APIRouter, Depends, status
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery, pagination_query
+from app.api.dependencies import get_session, PaginationQuery
 from app.api.employees.services import get_employees_by_ids
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.projects import models, services, schemas
@@ -37,7 +37,7 @@ def get_project(
 
 @router.get("", response_model=schemas.ProjectPagination)
 def get_projects_with_pagination_and_filters(
-    page_q: PaginationQuery = Depends(pagination_query),
+    page_q: PaginationQuery = Depends(),
     filter_q: schemas.ProjectFilterQuery = Depends(),
     session: SessionT = Depends(get_session),
 ):
