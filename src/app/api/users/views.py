@@ -62,12 +62,13 @@ def update_user(
     data: schemas.UserUpdate,
     user: models.User = Depends(valid_user_id),
     session: SessionT = Depends(get_session),
-    crud: CRUD[models.User] = Depends(get_crud),
 ):
-    with session.begin():
-        for attr, value in data.dict(exclude_unset=True).items():
-            setattr(user, attr, value)
-        return crud.save(user)
+    for attr, value in data.dict(exclude_unset=True).items():
+        setattr(user, attr, value)
+
+    session.add(user)
+    session.commit()
+    return user
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -76,7 +77,7 @@ def delete_user(
     session: SessionT = Depends(get_session),
     crud: CRUD[models.User] = Depends(get_crud),
 ):
-    with session.begin():
-        ok = crud.delete_by_id(user_id)
+    ok = crud.delete_by_id(user_id)
     if not ok:
         raise_404(user_id)
+    session.commit()
