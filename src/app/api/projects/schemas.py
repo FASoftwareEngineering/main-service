@@ -30,14 +30,3 @@ class ProjectRead(ProjectBase):
 
 class ProjectPagination(PaginationSchema[ProjectRead]):
     pass
-
-
-class ProjectFilterParams(ProjectBase):
-    code: str | None = None
-    name: str | None = None
-    status: ProjectStatuses | None = None
-
-
-class ProjectComplexFilterParams(BaseSchema):
-    manager_id: int | None = None
-    owner_id: int | None = None

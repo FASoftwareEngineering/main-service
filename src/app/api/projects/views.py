@@ -36,19 +36,11 @@ def get_project(
 
 
 @router.get("", response_model=schemas.ProjectPagination)
-def get_projects_with_pagination_and_filters(
+def get_projects(
     page_q: PaginationQuery = Depends(pagination_query),
-    simple_search_q: schemas.ProjectFilterParams = Depends(),
-    complex_search_q: schemas.ProjectComplexFilterParams = Depends(),
-    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Project] = Depends(get_crud),
 ):
-    projects, total = services.get_projects_by(
-        session,
-        simple_search_q,
-        complex_search_q,
-        page_q.offset,
-        page_q.limit,
-    )
+    projects, total = crud.get_all_paginate(offset=page_q.offset, limit=page_q.limit)
     return schemas.ProjectPagination(
         offset=page_q.offset,
         limit=page_q.limit,
