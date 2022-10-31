@@ -65,7 +65,6 @@ def update_user(
 ):
     for attr, value in data.dict(exclude_unset=True).items():
         setattr(user, attr, value)
-
     return crud.save(user)
 
 
