@@ -28,6 +28,14 @@ class ProjectResourceRead(ProjectEmployeeBase):
     pass
 
 
+class ProjectResourceCreate(BaseSchema):
+    id: int
+
+
+class ProjectResourceUpdate(ProjectResourceCreate):
+    pass
+
+
 class ProjectBase(BaseSchema):
     code: str
     name: str
@@ -42,7 +50,7 @@ class ProjectCreate(ProjectBase):
 
     owner_id: int
     manager_id: int | None = None
-    resource_ids: list[int] = []
+    resources: list[ProjectResourceCreate] = []
 
 
 class ProjectUpdate(ProjectBase):
@@ -52,7 +60,7 @@ class ProjectUpdate(ProjectBase):
 
     owner_id: int | None = None
     manager_id: int | None = None
-    resource_ids: list[int] = []
+    resources: list[ProjectResourceUpdate] = []
 
 
 class ProjectRead(ProjectBase):

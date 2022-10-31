@@ -47,3 +47,8 @@ def get_employees_with_pagination_by(
 
     total = session.scalar(sql.select(sql.func.count()).select_from(stmt))
     return session.scalars(stmt).all(), total
+
+
+def get_employees_by_ids(session: SessionT, ids: list[int]) -> list[models.Employee]:
+    stmt = sql.select(models.Employee).where(models.Employee.id.in_(ids))
+    return session.scalars(stmt).all()
