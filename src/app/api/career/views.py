@@ -159,32 +159,50 @@ def valid_skill_id(skill_id: int, crud: CRUD[models.Skill] = Depends(get_skills_
 
 @skills_router.get("/{skill_id}", response_model=schemas.SkillRead)
 def get_skill(
-    skill_id: int,
+    skill: models.Skill = Depends(valid_skill_id),
 ):
-    pass
+    return skill
 
 
 @skills_router.get("", response_model=list[schemas.SkillRead])
-def get_skills():
-    pass
+def get_skills(
+    crud: CRUD[models.Skill] = Depends(get_skills_crud),
+):
+    return crud.get_all()
 
 
 @skills_router.post("", response_model=schemas.SkillRead, status_code=status.HTTP_201_CREATED)
 def create_skill(
     data: schemas.SkillCreate,
+    session: SessionT = Depends(get_session),
 ):
-    pass
+    skill = models.Skill(**data.dict())
+    session.add(skill)
+    session.commit()
+    return skill
 
 
 @skills_router.patch("/{skill_id}", response_model=schemas.SkillRead)
 def update_skill(
     data: schemas.SkillUpdate,
+    skill: models.Skill = Depends(valid_skill_id),
+    session: SessionT = Depends(get_session),
 ):
-    pass
+    for attr, value in data.dict(exclude_unset=True).items():
+        setattr(skill, attr, value)
+
+    session.add(skill)
+    session.commit()
+    return skill
 
 
 @skills_router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_skill(
     skill_id: int,
+    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Skill] = Depends(get_skills_crud),
 ):
-    pass
+    ok = crud.delete_by_id(skill_id)
+    if not ok:
+        raise_404(message=f"Skill with id={skill_id} not found")
+    session.commit()
