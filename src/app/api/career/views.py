@@ -97,35 +97,53 @@ def valid_grade_id(grade_id: int, crud: CRUD[models.Grade] = Depends(get_grades_
 
 @grades_router.get("/{grade_id}", response_model=schemas.GradeRead)
 def get_grade(
-    grade_id: int,
+    grade: models.Grade = Depends(valid_grade_id),
 ):
-    pass
+    return grade
 
 
 @grades_router.get("", response_model=list[schemas.GradeRead])
-def get_grades():
-    pass
+def get_grades(
+    crud: CRUD[models.Grade] = Depends(get_grades_crud),
+):
+    return crud.get_all()
 
 
 @grades_router.post("", response_model=schemas.GradeRead, status_code=status.HTTP_201_CREATED)
 def create_grade(
     data: schemas.GradeCreate,
+    session: SessionT = Depends(get_session),
 ):
-    pass
+    grade = models.Grade(**data.dict())
+    session.add(grade)
+    session.commit()
+    return grade
 
 
 @grades_router.patch("/{grade_id}", response_model=schemas.GradeRead)
 def update_grade(
     data: schemas.GradeUpdate,
+    grade: models.Grade = Depends(valid_grade_id),
+    session: SessionT = Depends(get_session),
 ):
-    pass
+    for attr, value in data.dict(exclude_unset=True).items():
+        setattr(grade, attr, value)
+
+    session.add(grade)
+    session.commit()
+    return grade
 
 
 @grades_router.delete("/{grade_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_grade(
     grade_id: int,
+    session: SessionT = Depends(get_session),
+    crud: CRUD[models.Grade] = Depends(get_grades_crud),
 ):
-    pass
+    ok = crud.delete_by_id(grade_id)
+    if not ok:
+        raise_404(message=f"Grade with id={grade_id} not found")
+    session.commit()
 
 
 def get_skills_crud(session: SessionT = Depends(get_session)) -> CRUD[models.Skill]:
