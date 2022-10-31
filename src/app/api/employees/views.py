@@ -1,10 +1,9 @@
 import typing as t
 
 from fastapi import APIRouter, Depends, status
-from pydantic import parse_obj_as
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery, pagination_query
+from app.api.dependencies import get_session, PaginationQuery
 from app.api.employees import schemas, services, models
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.services import CRUD
@@ -37,22 +36,17 @@ def get_employee(
 
 @router.get("", response_model=schemas.EmployeePagination)
 def get_employees_with_pagination_and_filters(
-    page_q: PaginationQuery = Depends(pagination_query),
+    page_q: PaginationQuery = Depends(),
     filter_q: schemas.EmployeeFilterQuery = Depends(schemas.employee_filter_query),
     session: SessionT = Depends(get_session),
 ):
-    employees, total = services.get_employees_with_pagination_by(
-        session,
-        filter_q,
-        page_q.offset,
-        page_q.limit,
-    )
-    return schemas.EmployeePagination(
-        offset=page_q.offset,
-        limit=page_q.limit,
-        total=total,
-        results=parse_obj_as(list[schemas.EmployeeRead], employees),
-    )
+    employees, total = services.get_employees_with_pagination_by(session, filter_q, page_q)
+    return {
+        "offset": page_q.offset,
+        "limit": page_q.limit,
+        "total": total,
+        "results": employees,
+    }
 
 
 @router.patch("/{employee_id}", response_model=schemas.EmployeeRead)

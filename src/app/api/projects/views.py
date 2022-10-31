@@ -1,10 +1,10 @@
 import typing as t
 
 from fastapi import APIRouter, Depends, status
-from pydantic import parse_obj_as
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery, pagination_query
+from app.api.dependencies import get_session, PaginationQuery
+from app.api.employees.services import get_employees_by_ids
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.projects import models, services, schemas
 from app.api.services import CRUD
@@ -37,41 +37,52 @@ def get_project(
 
 @router.get("", response_model=schemas.ProjectPagination)
 def get_projects_with_pagination_and_filters(
-    page_q: PaginationQuery = Depends(pagination_query),
+    page_q: PaginationQuery = Depends(),
     filter_q: schemas.ProjectFilterQuery = Depends(),
     session: SessionT = Depends(get_session),
 ):
-    projects, total = services.get_projects_with_pagination_by(session, filter_q, page_q.offset, page_q.limit)
-    return schemas.ProjectPagination(
-        offset=page_q.offset,
-        limit=page_q.limit,
-        total=total,
-        results=parse_obj_as(list[schemas.ProjectRead], projects),
-    )
+    projects, total = services.get_projects_with_pagination_by(session, filter_q, page_q)
+    return {
+        "offset": page_q.offset,
+        "limit": page_q.limit,
+        "total": total,
+        "results": projects,
+    }
 
 
 @router.post("", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED)
 def create_project(
     data: schemas.ProjectCreate,
     session: SessionT = Depends(get_session),
-    crud: CRUD[models.Project] = Depends(get_crud),
 ):
-    with session.begin():
-        project = models.Project(**data.dict())
-        return crud.save(project)
+    new_data = data.dict()
+    resource_ids = [res.id for res in data.resources]
+    new_data["resources"] = get_employees_by_ids(session, resource_ids)
+
+    project = models.Project(**new_data)
+
+    session.add(project)
+    session.commit()
+    return project
 
 
 @router.patch("/{project_id}", response_model=schemas.ProjectRead)
 def update_project(
     data: schemas.ProjectUpdate,
-    session: SessionT = Depends(get_session),
     project: models.Project = Depends(valid_project_id),
-    crud: CRUD[models.Project] = Depends(get_crud),
+    session: SessionT = Depends(get_session),
 ):
-    with session.begin():
-        for attr, value in data.dict(exclude_unset=True).items():
-            setattr(project, attr, value)
-        return crud.save(project)
+    new_data = data.dict(exclude_unset=True)
+    if "resources" in new_data:
+        resource_ids = [res.id for res in data.resources]
+        new_data["resources"] = get_employees_by_ids(session, resource_ids)
+
+    for attr, value in new_data.items():
+        setattr(project, attr, value)
+
+    session.add(project)
+    session.commit()
+    return project
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -80,7 +91,7 @@ def delete_project(
     session: SessionT = Depends(get_session),
     crud: CRUD[models.Project] = Depends(get_crud),
 ):
-    with session.begin():
-        ok = crud.delete_by_id(project_id)
+    ok = crud.delete_by_id(project_id)
     if not ok:
         raise_404(project_id)
+    session.commit()

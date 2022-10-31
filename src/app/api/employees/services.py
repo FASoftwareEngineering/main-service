@@ -1,9 +1,10 @@
 from sqlalchemy import sql
 
 from app.api.career.models import RoleGradeLink
+from app.api.dependencies import PaginationQuery
 from app.api.employees import models, schemas
 from app.api.models import EmployeeRoleGradeLink
-from app.api.services import CRUD
+from app.api.services import CRUD, count_rows
 from app.core.db import SessionT
 
 
@@ -14,8 +15,7 @@ def crud_factory(session: SessionT) -> CRUD[models.Employee]:
 def get_employees_with_pagination_by(
     session: SessionT,
     by: schemas.EmployeeFilterQuery,
-    offset: int,
-    limit: int,
+    page_q: PaginationQuery,
 ) -> tuple[list[models.Employee], int]:
     clause = sql.true()
 
@@ -43,7 +43,10 @@ def get_employees_with_pagination_by(
     if by.grade_id is not None:
         clause &= RoleGradeLink.grade_id == by.grade_id
 
-    stmt = stmt.where(clause).offset(offset).limit(limit)
+    stmt = stmt.where(clause).offset(page_q.offset).limit(page_q.limit)
+    return session.scalars(stmt).all(), count_rows(session, stmt)
 
-    total = session.scalar(sql.select(sql.func.count()).select_from(stmt))
-    return session.scalars(stmt).all(), total
+
+def get_employees_by_ids(session: SessionT, ids: list[int]) -> list[models.Employee]:
+    stmt = sql.select(models.Employee).where(models.Employee.id.in_(ids))
+    return session.scalars(stmt).all()

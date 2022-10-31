@@ -1,7 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy import exc, sql
 
-from app.api.services import CRUD
+from app.api.dependencies import PaginationQuery
+from app.api.services import CRUD, count_rows
 from app.api.users import models, schemas, constants
 from app.core.db import SessionT
 
@@ -13,8 +14,7 @@ def crud_factory(session: SessionT) -> CRUD[models.User]:
 def get_users_with_pagination_by(
     session: SessionT,
     by: schemas.UserFilterQuery,
-    offset: int,
-    limit: int,
+    page_q: PaginationQuery,
 ) -> tuple[list[models.User], int]:
     param_col_eq_map = {
         "type": models.User.type,
@@ -34,10 +34,8 @@ def get_users_with_pagination_by(
     for p, v in eq_params.items():
         clause &= param_col_eq_map[p] == v
 
-    stmt = sql.select(models.User).where(clause).offset(offset).limit(limit)
-
-    total = session.scalar(sql.select(sql.func.count()).select_from(stmt))
-    return session.scalars(stmt).all(), total
+    stmt = sql.select(models.User).where(clause).offset(page_q.offset).limit(page_q.limit)
+    return session.scalars(stmt).all(), count_rows(session, stmt)
 
 
 def create_user(session: SessionT, data: schemas.UserCreate) -> models.User:

@@ -1,7 +1,8 @@
 from sqlalchemy import sql
 
+from app.api.dependencies import PaginationQuery
 from app.api.projects import models, schemas
-from app.api.services import CRUD
+from app.api.services import CRUD, count_rows
 from app.core.db import SessionT
 
 
@@ -12,8 +13,7 @@ def crud_factory(session: SessionT) -> CRUD[models.Project]:
 def get_projects_with_pagination_by(
     session: SessionT,
     by: schemas.ProjectFilterQuery,
-    offset: int,
-    limit: int,
+    page_q: PaginationQuery,
 ) -> tuple[list[models.Project], int]:
     clause = sql.true()
 
@@ -49,7 +49,5 @@ def get_projects_with_pagination_by(
     if by.contract_price_gte is not None:
         clause &= models.Project.contract_price >= by.contract_price_gte
 
-    stmt = sql.select(models.Project).where(clause).offset(offset).limit(limit)
-
-    total = session.scalar(sql.select(sql.func.count()).select_from(stmt))
-    return session.scalars(stmt).all(), total
+    stmt = sql.select(models.Project).where(clause).offset(page_q.offset).limit(page_q.limit)
+    return session.scalars(stmt).all(), count_rows(session, stmt)
