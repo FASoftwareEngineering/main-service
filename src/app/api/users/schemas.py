@@ -1,3 +1,4 @@
+from app.api.schemas import PaginationSchema
 from app.api.users.constants import PublicUserTypes
 from app.core.schemas import BaseSchema
 
@@ -29,6 +30,10 @@ class UserUpdate(UserBase):
 
 class UserRead(UserBase):
     id: int
+
+
+class UserPagination(PaginationSchema[UserRead]):
+    pass
 
 
 class UserFilterQuery(BaseSchema):
