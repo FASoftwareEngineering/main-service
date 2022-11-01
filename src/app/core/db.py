@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy as sa
+from sqlalchemy import event
 from sqlalchemy.orm import (
     sessionmaker,
     as_declarative,
@@ -63,7 +64,7 @@ class SoftDeleteMixin:
     deleted: bool = sa.Column(sa.Boolean, default=False, nullable=False)
 
 
-@sa.event.listens_for(Session, "do_orm_execute")
+@event.listens_for(Session, "do_orm_execute")
 def _add_filtering_criteria(execute_state: ORMExecuteState):
     if (
         not execute_state.is_column_load

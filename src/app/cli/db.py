@@ -138,7 +138,21 @@ def _create_employees(session: SessionT) -> None:
             EmployeeSkillLink(skill=skills["uml"], score=2),
             EmployeeSkillLink(skill=skills["erd"], score=2),
         ],
-        "developer": [
+        "developer1": [
+            EmployeeSkillLink(skill=skills["python"], score=3),
+            EmployeeSkillLink(skill=skills["fastapi"], score=1),
+            EmployeeSkillLink(skill=skills["flask"], score=2),
+            EmployeeSkillLink(skill=skills["django"], score=1),
+            EmployeeSkillLink(skill=skills["postgresql"], score=2),
+        ],
+        "developer2": [
+            EmployeeSkillLink(skill=skills["python"], score=3),
+            EmployeeSkillLink(skill=skills["fastapi"], score=1),
+            EmployeeSkillLink(skill=skills["flask"], score=2),
+            EmployeeSkillLink(skill=skills["django"], score=1),
+            EmployeeSkillLink(skill=skills["postgresql"], score=2),
+        ],
+        "developer3": [
             EmployeeSkillLink(skill=skills["python"], score=3),
             EmployeeSkillLink(skill=skills["fastapi"], score=1),
             EmployeeSkillLink(skill=skills["flask"], score=2),
@@ -197,7 +211,7 @@ def _create_employees(session: SessionT) -> None:
                 first_name="Мария",
                 last_name="Маркова",
                 role_grade=role_grade_records["developer1"],
-                skill_records=skill_records["developer"],
+                skill_records=skill_records["developer1"],
             ),
             Employee(
                 sso_id="employee_4",
@@ -206,7 +220,7 @@ def _create_employees(session: SessionT) -> None:
                 first_name="Иван",
                 last_name="Тихонов",
                 role_grade=role_grade_records["developer2"],
-                skill_records=skill_records["developer"],
+                skill_records=skill_records["developer2"],
             ),
         ],
         [
@@ -217,7 +231,7 @@ def _create_employees(session: SessionT) -> None:
                 first_name="Мирон",
                 last_name="Иванов",
                 role_grade=role_grade_records["developer3"],
-                skill_records=skill_records["developer"],
+                skill_records=skill_records["developer3"],
             ),
             Employee(
                 sso_id="employee_6",

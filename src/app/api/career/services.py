@@ -20,3 +20,10 @@ def skills_crud_factory(session: SessionT) -> CRUD[models.Skill]:
 def get_grades_by_ids(session: SessionT, ids: list[int]) -> list[models.Grade]:
     stmt = sql.select(models.Grade).where(models.Grade.id.in_(ids))
     return session.scalars(stmt).all()
+
+
+def get_role_grade(session: SessionT, role_id: int, grade_id: int) -> models.RoleGradeLink | None:
+    stmt = sql.select(models.RoleGradeLink).where(
+        (models.RoleGradeLink.role_id == role_id) & (models.RoleGradeLink.grade_id == grade_id)
+    )
+    return session.scalar(stmt)
