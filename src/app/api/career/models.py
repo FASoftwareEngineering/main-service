@@ -49,8 +49,7 @@ class RoleGradeLink(BaseModel, SurrogateKeyMixin):
 
     employees: list["Employee"] = relationship(
         "Employee",
-        secondary="employee_role_grade_link",
-        back_populates="role_grade_records",
+        back_populates="role_grade",
     )
 
     __table_args__ = (sa.UniqueConstraint("role_id", "grade_id"),)

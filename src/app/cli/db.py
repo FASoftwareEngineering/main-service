@@ -119,14 +119,14 @@ def _create_employees(session: SessionT) -> None:
     session.flush([*roles, *grades, *skills.values()])
 
     role_grade_records = {
-        "manager1": _get_role_grade_record(session, roles[0], roles[0].grades[1]),
-        "manager2": _get_role_grade_record(session, roles[0], roles[0].grades[1]),
-        "analyst": _get_role_grade_record(session, roles[1], roles[1].grades[1]),
-        "architect": _get_role_grade_record(session, roles[2], roles[2].grades[2]),
-        "developer1": _get_role_grade_record(session, roles[3], roles[3].grades[2]),
-        "developer2": _get_role_grade_record(session, roles[3], roles[3].grades[1]),
-        "developer3": _get_role_grade_record(session, roles[3], roles[3].grades[0]),
-        "tester": _get_role_grade_record(session, roles[4], roles[4].grades[0]),
+        "manager1": _get_role_grade(session, roles[0], roles[0].grades[1]),
+        "manager2": _get_role_grade(session, roles[0], roles[0].grades[1]),
+        "analyst": _get_role_grade(session, roles[1], roles[1].grades[1]),
+        "architect": _get_role_grade(session, roles[2], roles[2].grades[2]),
+        "developer1": _get_role_grade(session, roles[3], roles[3].grades[2]),
+        "developer2": _get_role_grade(session, roles[3], roles[3].grades[1]),
+        "developer3": _get_role_grade(session, roles[3], roles[3].grades[0]),
+        "tester": _get_role_grade(session, roles[4], roles[4].grades[0]),
     }
     skill_records = {
         "analyst": [
@@ -159,7 +159,7 @@ def _create_employees(session: SessionT) -> None:
             phone="+75555555555",
             first_name="Марк",
             last_name="Григорьев",
-            role_grade_records=[role_grade_records["manager1"]],
+            role_grade=role_grade_records["manager1"],
         ),
         Employee(
             sso_id="employee_manager_2",
@@ -167,7 +167,7 @@ def _create_employees(session: SessionT) -> None:
             phone="+74444444444",
             first_name="Анна",
             last_name="Фролова",
-            role_grade_records=[role_grade_records["manager2"]],
+            role_grade=role_grade_records["manager2"],
         ),
     ]
     employees = [
@@ -178,7 +178,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+73333333333",
                 first_name="Анна",
                 last_name="Платонова",
-                role_grade_records=[role_grade_records["analyst"]],
+                role_grade=role_grade_records["analyst"],
                 skill_records=skill_records["analyst"],
             ),
             Employee(
@@ -187,7 +187,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+72222222222",
                 first_name="Мария",
                 last_name="Чернышева",
-                role_grade_records=[role_grade_records["architect"]],
+                role_grade=role_grade_records["architect"],
                 skill_records=skill_records["architect"],
             ),
             Employee(
@@ -196,7 +196,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+71111111111",
                 first_name="Мария",
                 last_name="Маркова",
-                role_grade_records=[role_grade_records["developer1"]],
+                role_grade=role_grade_records["developer1"],
                 skill_records=skill_records["developer"],
             ),
             Employee(
@@ -205,7 +205,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+79879879898",
                 first_name="Иван",
                 last_name="Тихонов",
-                role_grade_records=[role_grade_records["developer2"]],
+                role_grade=role_grade_records["developer2"],
                 skill_records=skill_records["developer"],
             ),
         ],
@@ -216,7 +216,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+78768769797",
                 first_name="Мирон",
                 last_name="Иванов",
-                role_grade_records=[role_grade_records["developer3"]],
+                role_grade=role_grade_records["developer3"],
                 skill_records=skill_records["developer"],
             ),
             Employee(
@@ -225,7 +225,7 @@ def _create_employees(session: SessionT) -> None:
                 phone="+776576567676",
                 first_name="Полина",
                 last_name="Романова",
-                role_grade_records=[role_grade_records["tester"]],
+                role_grade=role_grade_records["tester"],
                 skill_records=skill_records["tester"],
             ),
         ],
@@ -238,7 +238,7 @@ def _create_employees(session: SessionT) -> None:
     session.commit()
 
 
-def _get_role_grade_record(session: SessionT, role: Role, grade: Grade) -> RoleGradeLink | None:
+def _get_role_grade(session: SessionT, role: Role, grade: Grade) -> RoleGradeLink | None:
     stmt = sql.select(RoleGradeLink).where(
         (RoleGradeLink.role_id == role.id) & (RoleGradeLink.grade_id == grade.id)
     )

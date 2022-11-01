@@ -3,7 +3,6 @@ from sqlalchemy import sql
 from app.api.career.models import RoleGradeLink
 from app.api.dependencies import PaginationQuery
 from app.api.employees import models, schemas
-from app.api.models import EmployeeRoleGradeLink
 from app.api.services import CRUD, count_rows
 from app.core.db import SessionT
 
@@ -37,7 +36,7 @@ def get_employees_with_pagination_by(
     stmt = sql.select(models.Employee)
 
     if by.role_id is not None or by.grade_id is not None:
-        stmt = stmt.join(EmployeeRoleGradeLink).join(RoleGradeLink)
+        stmt = stmt.join(RoleGradeLink)
     if by.role_id is not None:
         clause &= RoleGradeLink.role_id == by.role_id
     if by.grade_id is not None:
