@@ -1,0 +1,19 @@
+name: flake8-WPS
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  flake8-WPS:
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: true
+        matrix:
+          python-version: ['3.10']
+
+      steps:
+      - uses: wemake-services/wemake-python-styleguide@0.17.0
+      - name: wemake-python-styleguide
