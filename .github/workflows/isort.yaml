@@ -13,5 +13,5 @@ jobs:
       - uses: jamescurtin/isort-action@master
         with:
             requirementsFiles: "./src/requirements.txt ./src/requirements-test.txt"
-        env:
-          profile: "black"
+        script: |
+          isort --profile=black --check-only --diff .
