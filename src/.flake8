@@ -6,3 +6,4 @@ exclude =
     */__init__.py
     migrations/*
     conftest.py
+    tests/*
