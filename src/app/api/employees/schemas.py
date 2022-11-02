@@ -16,7 +16,7 @@ class CareerGradeRead(BaseSchema):
 
 class CareerSkillRead(BaseSchema):
     id: int
-    name: int
+    name: str
     score: int
     max_score: int
 
@@ -26,20 +26,8 @@ class CareerSkillCreate(BaseSchema):
     score: int
 
 
-class EmployeeCareerCreate(BaseSchema):
-    role_id: int
-    grade_id: int
-    skills: list[CareerSkillCreate] = []
-
-
-class EmployeeCareerUpdate(EmployeeCareerCreate):
+class CareerSkillUpdate(CareerSkillCreate):
     pass
-
-
-class EmployeeCareerRead(BaseSchema):
-    role: CareerRoleRead
-    grade: CareerGradeRead
-    skills: list[CareerSkillRead] = []
 
 
 class EmployeeManagerRead(BaseSchema):
@@ -61,7 +49,9 @@ class EmployeeBase(BaseSchema):
 
 class EmployeeCreate(EmployeeBase):
     manager_id: int | None = None
-    career: list[EmployeeCareerCreate] = []
+    role_id: int
+    grade_id: int
+    skills: list[CareerSkillCreate] = []
 
 
 class EmployeeUpdate(EmployeeBase):
@@ -71,13 +61,17 @@ class EmployeeUpdate(EmployeeBase):
     phone: str | None = None
 
     manager_id: int | None = None
-    career: list[EmployeeCareerUpdate] = []
+    role_id: int | None = None
+    grade_id: int | None = None
+    skills: list[CareerSkillUpdate] = []
 
 
 class EmployeeRead(EmployeeBase):
     id: int
     manager: EmployeeManagerRead | None
-    career: list[EmployeeCareerRead]
+    role: CareerRoleRead
+    grade: CareerGradeRead
+    skills: list[CareerSkillRead] = []
 
 
 class EmployeePagination(PaginationSchema[EmployeeRead]):

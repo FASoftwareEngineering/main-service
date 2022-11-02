@@ -10,16 +10,9 @@ if t.TYPE_CHECKING:
     from app.api.career.models import Skill
 
 __all__ = [
-    "EmployeeRoleGradeLink",
     "EmployeeSkillLink",
+    "ProjectResourceLink",
 ]
-
-
-class EmployeeRoleGradeLink(BaseModel, TimestampMixin):
-    __tablename__ = "employee_role_grade_link"
-
-    employee_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
-    role_grade_id: int = sa.Column(sa.ForeignKey("role_grade_link.id", ondelete="CASCADE"), primary_key=True)
 
 
 class EmployeeSkillLink(BaseModel, TimestampMixin):

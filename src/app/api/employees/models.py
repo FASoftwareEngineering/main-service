@@ -7,7 +7,7 @@ from app.api.users.constants import UserTypes
 from app.api.users.models import User
 
 if t.TYPE_CHECKING:
-    from app.api.career.models import RoleGradeLink, Skill
+    from app.api.career.models import RoleGradeLink
     from app.api.models import EmployeeSkillLink
     from app.api.projects.models import Project
 
@@ -20,6 +20,7 @@ __all__ = [
 # https://docs.sqlalchemy.org/en/14/orm/inheritance.html#single-table-inheritance
 class Employee(User):
     manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="SET NULL"))
+    role_grade_id: int = sa.Column(sa.ForeignKey("role_grade_link.id"))
 
     manager: "Employee" = relationship(
         "Employee",
@@ -31,9 +32,8 @@ class Employee(User):
         back_populates="manager",
     )
 
-    role_grade_records: list["RoleGradeLink"] = relationship(
+    role_grade: "RoleGradeLink" = relationship(
         "RoleGradeLink",
-        secondary="employee_role_grade_link",
         back_populates="employees",
     )
     skill_records: list["EmployeeSkillLink"] = relationship(

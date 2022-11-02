@@ -44,13 +44,12 @@ class Grade(BaseModel, SurrogateKeyMixin, TimestampMixin, SoftDeleteMixin):
 class RoleGradeLink(BaseModel, SurrogateKeyMixin):
     __tablename__ = "role_grade_link"
 
-    role_id: int = sa.Column(sa.ForeignKey("role.id", ondelete="CASCADE"))
-    grade_id: int = sa.Column(sa.ForeignKey("grade.id", ondelete="CASCADE"))
+    role_id: int = sa.Column(sa.ForeignKey("role.id", ondelete="CASCADE"), nullable=False)
+    grade_id: int = sa.Column(sa.ForeignKey("grade.id", ondelete="CASCADE"), nullable=False)
 
     employees: list["Employee"] = relationship(
         "Employee",
-        secondary="employee_role_grade_link",
-        back_populates="role_grade_records",
+        back_populates="role_grade",
     )
 
     __table_args__ = (sa.UniqueConstraint("role_id", "grade_id"),)

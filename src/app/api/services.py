@@ -17,14 +17,20 @@ class CRUD(t.Generic[_M]):
         self.session = session
         self.model_cls = model_cls
 
-    def save(self, entity: _M) -> _M:
+    def save(self, entity: _M, commit: bool = True) -> _M:
         self.session.add(entity)
-        self.session.flush()
+        if commit:
+            self.session.commit()
+        else:
+            self.session.flush()
         return entity
 
-    def save_all(self, entities: list[_M]) -> list[_M]:
+    def save_all(self, entities: list[_M], commit: bool = True) -> list[_M]:
         self.session.add_all(entities)
-        self.session.flush()
+        if commit:
+            self.session.commit()
+        else:
+            self.session.flush()
         return entities
 
     def get_by_id(self, id_: int, _include_deleted: bool = False) -> _M | None:

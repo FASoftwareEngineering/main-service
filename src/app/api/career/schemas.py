@@ -1,25 +1,35 @@
 from app.core.schemas import BaseSchema
 
 
-class RoleGradeID(BaseSchema):
+class RoleGradeCreate(BaseSchema):
     id: int
+
+
+class RoleGradeUpdate(RoleGradeCreate):
+    pass
+
+
+class RoleGradeRead(BaseSchema):
+    id: int
+    name: str
 
 
 class RoleBase(BaseSchema):
     name: str
-    grades: list[RoleGradeID] = []
 
 
 class RoleCreate(RoleBase):
-    pass
+    grades: list[RoleGradeCreate] = []
 
 
 class RoleUpdate(RoleBase):
     name: str | None = None
+    grades: list[RoleGradeUpdate] = []
 
 
 class RoleRead(RoleBase):
     id: int
+    grades: list[RoleGradeRead] = []
 
 
 class GradeBase(BaseSchema):
