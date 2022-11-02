@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  black-pylint-isort:
+  build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
