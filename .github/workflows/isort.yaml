@@ -3,14 +3,20 @@ on:
   - push
 
 jobs:
-  build:
+  isort:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ['3.10']
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - uses: jamescurtin/isort-action@master
-        with:
-            requirementsFiles: "./src/requirements.txt ./src/requirements-test.txt"
-      - run: isort --profile=black --check-only --diff .
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+    - run: pip install --upgrade pip
+    - run: pip install isort==5.10.1
+    - run: isort --profile=black --check-only --diff $(git ls-files '*.py')
