@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  testing:
+  black-pylint:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -25,3 +25,15 @@ jobs:
     - run: pip install black==22.8.0 pylint==2.15.3
     - run: black --diff --check $(git ls-files '*.py') 
     - run: pylint --errors-only --disable=E0401,E0611,E1101 --ignore-paths="^src/migrations/.*$" $(git ls-files '*.py')
+
+
+  wemake-python-styleguide:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ['3.10']
+
+    steps:
+    - uses: wemake-services/wemake-python-styleguide@0.17.0
+    - name: wemake-python-styleguide
