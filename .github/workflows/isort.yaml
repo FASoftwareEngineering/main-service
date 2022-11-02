@@ -12,6 +12,6 @@ jobs:
           python-version: 3.8
       - uses: jamescurtin/isort-action@master
         with:
-            requirementsFiles: "requirements.txt requirements-test.txt"
+            requirementsFiles: "./src/requirements.txt ./src/requirements-test.txt"
         env:
           profile: "black"
