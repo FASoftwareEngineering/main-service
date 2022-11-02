@@ -13,15 +13,15 @@ repos:
       - id: pylint
         args: [--errors-only,  --disable=E1101, --disable=E0401, --disable=E0611, --ignore-paths="^src/migrations/.*$"]
 
-  - repo: local
-    hooks:
-      - id: flake8
-        name: flake8
-        description: Python style guide enforcement
-        entry: flake8
-        args: ["--config=./src/.flake8"]
-        language: python
-        types: [python]
+#  - repo: local
+#    hooks:
+#      - id: flake8
+#        name: flake8
+#        description: Python style guide enforcement
+#        entry: flake8
+#        args: ["--config=./src/.flake8"]
+#        language: python
+#        types: [python]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1

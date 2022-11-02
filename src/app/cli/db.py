@@ -3,12 +3,12 @@ from datetime import datetime
 import typer
 from sqlalchemy import sql
 
-from app.api.career.models import Role, Grade, RoleGradeLink, Skill
+from app.api.career.models import Grade, Role, RoleGradeLink, Skill
 from app.api.employees.models import Employee
 from app.api.models import EmployeeSkillLink
 from app.api.projects.constants import ProjectStatuses
-from app.api.projects.models import Project, ProjectOwner, ProjectManager
-from app.core.db import BaseModel, engine, SessionLocal, SessionT
+from app.api.projects.models import Project, ProjectManager, ProjectOwner
+from app.core.db import BaseModel, SessionLocal, SessionT, engine
 
 app = typer.Typer()
 

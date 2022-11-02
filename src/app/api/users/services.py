@@ -3,7 +3,7 @@ from sqlalchemy import exc, sql
 
 from app.api.dependencies import PaginationQuery
 from app.api.services import CRUD, count_rows
-from app.api.users import models, schemas, constants
+from app.api.users import constants, models, schemas
 from app.core.db import SessionT
 
 

@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
-from app.api.career import schemas, models, services
+from app.api.career import models, schemas, services
 from app.api.constants import Prefixes, Tags
 from app.api.dependencies import get_session
 from app.api.exceptions import raise_404

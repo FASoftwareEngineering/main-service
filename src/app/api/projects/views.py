@@ -3,10 +3,10 @@ import typing as t
 from fastapi import APIRouter, Depends, status
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery
+from app.api.dependencies import PaginationQuery, get_session
 from app.api.employees.services import get_employees_by_ids
 from app.api.exceptions import raise_404 as _raise_404
-from app.api.projects import models, services, schemas
+from app.api.projects import models, schemas, services
 from app.api.services import CRUD
 from app.core.db import SessionT
 

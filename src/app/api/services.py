@@ -2,7 +2,7 @@ import typing as t
 
 from sqlalchemy import sql
 
-from app.core.db import SessionT, SurrogateKeyMixin, SoftDeleteMixin
+from app.core.db import SessionT, SoftDeleteMixin, SurrogateKeyMixin
 
 _M = t.TypeVar("_M", bound=t.Union[SurrogateKeyMixin, SoftDeleteMixin])
 

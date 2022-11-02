@@ -9,9 +9,9 @@ from httpx import AsyncClient
 os.environ["APP_DEBUG"] = "False"
 os.environ["APP_DB_URI"] = "postgresql://postgres:postgres@127.0.0.1:5434/test_postgres"
 
-from app.main import app  # noqa
 from app.config import config  # noqa
 from app.core.db import BaseModel, engine  # noqa
+from app.main import app  # noqa
 
 
 @pytest.fixture(scope="session", autouse=True)
