@@ -1,13 +1,13 @@
 import typing as t
 
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 from pydantic import parse_obj_as
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery, pagination_query
+from app.api.dependencies import PaginationQuery, get_session, pagination_query
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.services import CRUD
-from app.api.users import schemas, models, services
+from app.api.users import models, schemas, services
 from app.core.db import SessionT
 
 router = APIRouter(prefix=f"/{Prefixes.users}", tags=[Tags.users])
@@ -52,22 +52,22 @@ def get_users_with_pagination_and_filters(
 
 @router.post("", response_model=schemas.UserRead, status_code=status.HTTP_201_CREATED)
 def create_user(
-    data: schemas.UserCreate,
+    current_data: schemas.UserCreate,
     session: SessionT = Depends(get_session),
 ):
-    return services.create_user(session, data)
+    return services.create_user(session, current_data)
 
 
 @router.patch("/{user_id}", response_model=schemas.UserRead)
 def update_user(
-    data: schemas.UserUpdate,
+    current_data: schemas.UserUpdate,
     user: models.User = Depends(valid_user_id),
     session: SessionT = Depends(get_session),
     crud: CRUD[models.User] = Depends(get_crud),
 ):
     with session.begin():
-        for attr, value in data.dict(exclude_unset=True).items():
-            setattr(user, attr, value)
+        for attr, current_value in current_data.dict(exclude_unset=True).items():
+            setattr(user, attr, current_value)
         return crud.save(user)
 
 

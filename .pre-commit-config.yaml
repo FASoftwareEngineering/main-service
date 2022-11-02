@@ -12,3 +12,28 @@ repos:
     hooks:
       - id: pylint
         args: [--errors-only,  --disable=E1101, --disable=E0401, --disable=E0611, --ignore-paths="^src/migrations/.*$"]
+
+  - repo: local
+    hooks:
+      - id: flake8
+        name: flake8
+        description: Python style guide enforcement
+        entry: flake8
+        args: ["--config=./src/.flake8"]
+        language: python
+        types: [python]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort (python)
+
+
+  #- repo: https://github.com/python-poetry/poetry
+  #  rev: 1.2.2
+  #  hooks:
+  #    - id: poetry-check
+  #    - id: poetry-lock
+  #    - id: poetry-export
+  #      args: [ "-f", "requirements.txt", "-o", "requirements.txt" ]

@@ -7,7 +7,7 @@ from app.api.users.constants import UserTypes
 from app.api.users.models import User
 
 if t.TYPE_CHECKING:
-    from app.api.career.models import RoleGradeLink, Skill
+    from app.api.career.models import RoleGradeLink
     from app.api.models import EmployeeSkillLink
     from app.api.projects.models import Project
 
@@ -50,3 +50,7 @@ class Employee(User):
     __mapper_args__ = {
         "polymorphic_identity": UserTypes.employee,
     }
+
+
+class BufModel(User):
+    manager_id: int = sa.Column(sa.ForeignKey("user.id", ondelete="SET NULL"))

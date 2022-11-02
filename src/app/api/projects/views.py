@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, status
 from pydantic import parse_obj_as
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery, pagination_query
+from app.api.dependencies import PaginationQuery, get_session, pagination_query
 from app.api.exceptions import raise_404 as _raise_404
-from app.api.projects import models, services, schemas
+from app.api.projects import models, schemas, services
 from app.api.services import CRUD
 from app.core.db import SessionT
 
@@ -52,25 +52,25 @@ def get_projects_with_pagination_and_filters(
 
 @router.post("", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED)
 def create_project(
-    data: schemas.ProjectCreate,
+    current_data: schemas.ProjectCreate,
     session: SessionT = Depends(get_session),
     crud: CRUD[models.Project] = Depends(get_crud),
 ):
     with session.begin():
-        project = models.Project(**data.dict())
+        project = models.Project(**current_data.dict())
         return crud.save(project)
 
 
 @router.patch("/{project_id}", response_model=schemas.ProjectRead)
 def update_project(
-    data: schemas.ProjectUpdate,
+    current_data: schemas.ProjectUpdate,
     session: SessionT = Depends(get_session),
     project: models.Project = Depends(valid_project_id),
     crud: CRUD[models.Project] = Depends(get_crud),
 ):
     with session.begin():
-        for attr, value in data.dict(exclude_unset=True).items():
-            setattr(project, attr, value)
+        for attr, current_value in current_data.dict(exclude_unset=True).items():
+            setattr(project, attr, current_value)
         return crud.save(project)
 
 

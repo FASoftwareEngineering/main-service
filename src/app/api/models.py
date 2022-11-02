@@ -6,8 +6,8 @@ from sqlalchemy.orm import relationship
 from app.core.db import BaseModel, TimestampMixin
 
 if t.TYPE_CHECKING:
-    from app.api.employees.models import Employee
     from app.api.career.models import Skill
+    from app.api.employees.models import Employee
 
 __all__ = [
     "EmployeeRoleGradeLink",

@@ -2,7 +2,7 @@ import typing as t
 
 from fastapi import Query
 
-from app.core.db import SessionT, SessionLocal
+from app.core.db import SessionLocal, SessionT
 from app.core.schemas import BaseSchema
 
 

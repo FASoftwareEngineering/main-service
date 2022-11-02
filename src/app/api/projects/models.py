@@ -7,13 +7,7 @@ from sqlalchemy.orm import relationship
 from app.api.projects.constants import ProjectStatuses
 from app.api.users.constants import UserTypes
 from app.api.users.models import User
-from app.core.db import (
-    BaseModel,
-    SurrogateKeyMixin,
-    TimestampMixin,
-    SoftDeleteMixin,
-    StrSizes,
-)
+from app.core.db import BaseModel, SoftDeleteMixin, StrSizes, SurrogateKeyMixin, TimestampMixin
 
 if t.TYPE_CHECKING:
     from app.api.employees.models import Employee

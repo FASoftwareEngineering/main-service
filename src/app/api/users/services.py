@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import exc, sql
 
 from app.api.services import CRUD
-from app.api.users import models, schemas, constants
+from app.api.users import constants, models, schemas
 from app.core.db import SessionT
 
 
@@ -40,11 +40,11 @@ def get_users_with_pagination_by(
     return session.scalars(stmt).all(), total
 
 
-def create_user(session: SessionT, data: schemas.UserCreate) -> models.User:
-    if data.type == constants.PublicUserTypes.employee:
-        return create_employee(session, data)
+def create_user(session: SessionT, current_data: schemas.UserCreate) -> models.User:
+    if current_data.type == constants.PublicUserTypes.employee:
+        return create_employee(session, current_data)
 
-    user = models.User(**data.dict())
+    user = models.User(**current_data.dict())
     try:
         session.add(user)
         session.commit()
@@ -58,12 +58,12 @@ def create_user(session: SessionT, data: schemas.UserCreate) -> models.User:
 
 
 # TODO: подумать над реализацией более очевидного поведения
-def create_employee(session: SessionT, data: schemas.UserCreate) -> models.User:
-    user = get_employee_by_email(session, data.email)
+def create_employee(session: SessionT, current_data: schemas.UserCreate) -> models.User:
+    user = get_employee_by_email(session, current_data.email)
     if user is None:
-        user = models.User(**data.dict())
+        user = models.User(**current_data.dict())
     else:
-        user.sso_id = data.sso_id
+        user.sso_id = current_data.sso_id
 
     session.add(user)
     session.commit()
@@ -72,6 +72,6 @@ def create_employee(session: SessionT, data: schemas.UserCreate) -> models.User:
 
 def get_employee_by_email(session: SessionT, email: str) -> models.User | None:
     stmt = sql.select(models.User).where(
-        (models.User.type == constants.UserTypes.employee) & (models.User.email == email)
+        (models.User.type == constants.UserTypes.employee) & (models.User.email == email),
     )
     return session.scalar(stmt)
