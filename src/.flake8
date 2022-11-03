@@ -1,3 +1,9 @@
 [flake8]
 max-line-length = 110
-extend-ignore = E203
+extend-ignore = E203, WPS604, WPS337, WPS202, WPS214, WPS215, D102, D103, D100, D101, WPS111, WPS305, D107, B008, WPS420, WPS306, WPS400, WPS229, WPS226, WPS114, WPS404, WPS221, WPS465, WPS410, D400, WPS501, WPS210, WPS115
+inline-quotes = "
+exclude =
+    */__init__.py
+    migrations/*
+    conftest.py
+    tests/*
