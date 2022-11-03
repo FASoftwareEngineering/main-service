@@ -24,6 +24,6 @@ def get_grades_by_ids(session: SessionT, ids: list[int]) -> list[models.Grade]:
 
 def get_role_grade(session: SessionT, role_id: int, grade_id: int) -> models.RoleGradeLink | None:
     stmt = sql.select(models.RoleGradeLink).where(
-        (models.RoleGradeLink.role_id == role_id) & (models.RoleGradeLink.grade_id == grade_id)
+        (models.RoleGradeLink.role_id == role_id) & (models.RoleGradeLink.grade_id == grade_id),
     )
     return session.scalar(stmt)

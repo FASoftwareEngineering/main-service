@@ -29,8 +29,9 @@ class Config(BaseSettings):
     }
 
     class Config:
+        """ENV config"""
+
         env_file = _BASE_DIR.parent.parent / ".env"
-        # env_file = _BASE_DIR.parent.parent / ".env.local"
         env_prefix = _ENV_PREFIX
 
 
