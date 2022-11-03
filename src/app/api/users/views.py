@@ -1,12 +1,12 @@
 import typing as t
 
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery
+from app.api.dependencies import PaginationQuery, get_session
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.services import CRUD
-from app.api.users import schemas, models, services
+from app.api.users import models, schemas, services
 from app.core.db import SessionT
 
 router = APIRouter(prefix=f"/{Prefixes.users}", tags=[Tags.users])

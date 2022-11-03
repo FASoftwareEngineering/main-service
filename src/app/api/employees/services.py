@@ -2,7 +2,7 @@ import typing as t
 
 from sqlalchemy import sql
 
-from app.api.career.models import RoleGradeLink, Role, Grade
+from app.api.career.models import Grade, Role, RoleGradeLink
 from app.api.dependencies import PaginationQuery
 from app.api.employees import models, schemas
 from app.api.models import EmployeeSkillLink
@@ -81,7 +81,7 @@ def employee_to_schema_read(session: SessionT, employee: models.Employee) -> dic
                 "name": record.skill.name,
                 "score": record.score,
                 "max_score": record.skill.max_score,
-            }
+            },
         )
 
     return {

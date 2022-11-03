@@ -1,12 +1,12 @@
 import typing as t
 
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import exc
 
 from app.api.career.services import get_role_grade
 from app.api.constants import Prefixes, Tags
-from app.api.dependencies import get_session, PaginationQuery
-from app.api.employees import schemas, services, models
+from app.api.dependencies import PaginationQuery, get_session
+from app.api.employees import models, schemas, services
 from app.api.exceptions import raise_404 as _raise_404
 from app.api.models import EmployeeSkillLink
 from app.api.services import CRUD
