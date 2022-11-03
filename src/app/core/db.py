@@ -3,11 +3,11 @@ from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.orm import (
-    sessionmaker,
+    ORMExecuteState,
+    Session,
     as_declarative,
     declarative_mixin,
-    Session,
-    ORMExecuteState,
+    sessionmaker,
     with_loader_criteria,
 )
 
@@ -74,9 +74,9 @@ def _add_filtering_criteria(execute_state: ORMExecuteState):
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(
                 SoftDeleteMixin,
-                lambda cls: cls.deleted == sa.false(),
+                lambda x: x.deleted == sa.false(),
                 include_aliases=True,
-            )
+            ),
         )
 
 

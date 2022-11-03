@@ -3,12 +3,12 @@ from datetime import datetime
 import typer
 from sqlalchemy import sql
 
-from app.api.career.models import Role, Grade, RoleGradeLink, Skill
+from app.api.career.models import Grade, Role, RoleGradeLink, Skill
 from app.api.employees.models import Employee
 from app.api.models import EmployeeSkillLink
 from app.api.projects.constants import ProjectStatuses
-from app.api.projects.models import Project, ProjectOwner, ProjectManager
-from app.core.db import BaseModel, engine, SessionLocal, SessionT
+from app.api.projects.models import Project, ProjectManager, ProjectOwner
+from app.core.db import BaseModel, SessionLocal, SessionT, engine
 
 app = typer.Typer()
 
@@ -73,7 +73,7 @@ def _create_projects(session: SessionT) -> None:
             status=ProjectStatuses.active,
             start_date=datetime(2022, 10, 31),
             end_date=datetime(2024, 12, 12),
-            contract_price=6_000_000,
+            contract_price=6000000,
         ),
     ]
 
@@ -254,7 +254,7 @@ def _create_employees(session: SessionT) -> None:
 
 def _get_role_grade(session: SessionT, role: Role, grade: Grade) -> RoleGradeLink | None:
     stmt = sql.select(RoleGradeLink).where(
-        (RoleGradeLink.role_id == role.id) & (RoleGradeLink.grade_id == grade.id)
+        (RoleGradeLink.role_id == role.id) & (RoleGradeLink.grade_id == grade.id),
     )
     return session.scalar(stmt)
 

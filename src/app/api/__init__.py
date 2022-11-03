@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api import users, projects, employees, career
+from app.api import career, employees, projects, users
 
 router = APIRouter(prefix="/v1", responses={404: {"description": "Not found"}})
 

@@ -8,7 +8,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app import api
 from app.config import Config, config
-from app.models import *  # noqa: F401
 
 
 def create_app(conf: Config) -> FastAPI:
@@ -29,7 +28,7 @@ def configure_logging(conf: Config) -> None:
             "sys.stderr": sys.stderr,
             "sys.stdout": sys.stdout,
         }
-        for h in log_conf["handlers"]:
+        for h in log_conf.get("handlers"):
             h["sink"] = sinks.get(h["sink"], h["sink"])
 
     logger.configure(**log_conf)

@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
-from app.api.career import schemas, models, services
+from app.api.career import models, schemas, services
 from app.api.constants import Prefixes, Tags
 from app.api.dependencies import get_session
 from app.api.exceptions import raise_404
@@ -61,7 +61,7 @@ def update_role(
     new_data = data.dict(exclude_unset=True)
     if "grades" in new_data:
         grades_ids = [grade.id for grade in data.grades]
-        new_data["grades"] = services.get_grades_by_ids(session, grades_ids)
+        new_data["grades"] = services.get_grades_by_ids(session, grades_ids)  # noqa
 
     for attr, value in new_data.items():
         setattr(role, attr, value)

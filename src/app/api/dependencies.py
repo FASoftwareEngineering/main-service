@@ -1,6 +1,6 @@
 import typing as t
 
-from app.core.db import SessionT, SessionLocal
+from app.core.db import SessionLocal, SessionT
 from app.core.schemas import BaseSchema
 
 

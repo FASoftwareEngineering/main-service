@@ -3,7 +3,7 @@ from sqlalchemy import exc, sql
 
 from app.api.dependencies import PaginationQuery
 from app.api.services import CRUD, count_rows
-from app.api.users import models, schemas, constants
+from app.api.users import constants, models, schemas
 from app.core.db import SessionT
 
 
@@ -68,6 +68,6 @@ def create_employee(session: SessionT, data: schemas.UserCreate) -> models.User:
 
 def get_employee_by_email(session: SessionT, email: str) -> models.User | None:
     stmt = sql.select(models.User).where(
-        (models.User.type == constants.UserTypes.employee) & (models.User.email == email)
+        (models.User.type == constants.UserTypes.employee) & (models.User.email == email),
     )
     return session.scalar(stmt)

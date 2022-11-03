@@ -1,13 +1,7 @@
 import sqlalchemy as sa
 
 from app.api.users.constants import UserTypes
-from app.core.db import (
-    BaseModel,
-    SurrogateKeyMixin,
-    TimestampMixin,
-    SoftDeleteMixin,
-    StrSizes,
-)
+from app.core.db import BaseModel, SoftDeleteMixin, StrSizes, SurrogateKeyMixin, TimestampMixin
 
 __all__ = [
     "User",

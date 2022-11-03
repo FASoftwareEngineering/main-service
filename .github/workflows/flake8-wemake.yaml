@@ -1,4 +1,4 @@
-name: General code quality checks
+name: Flake8 with wemake-python-styleguide checks
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ['3.10']
-      
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -22,7 +22,5 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: pip
     - run: pip install --upgrade pip
-    - run: pip install black==22.8.0 pylint==2.15.3 isort==5.10.1
-    - run: black --diff --check $(git ls-files '*.py') 
-    - run: pylint --errors-only --disable=E0401,E0611,E1101 --ignore-paths="^src/migrations/.*$" $(git ls-files '*.py')
-    - run: isort --profile=black --check-only --diff $(git ls-files '*.py')
+    - run: pip install wemake-python-styleguide==0.17.0
+    - run: flake8 $(git ls-files '*.py') --config=./src/.flake8
