@@ -5,7 +5,7 @@ from app.cli.db import init_dev
 
 
 @pytest.fixture
-def init_db():
+def init_data():
     init_dev()
 
 
@@ -31,28 +31,39 @@ def grades_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("db", "init_db")
+@pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_resources_with_skills(client: AsyncClient, employees_url: str, skills_url: str):
-    # 1. Просмотр всех сотрудников
+    """
+    Use Case: работа со скиллами (навыками) сотрудников
 
-    resp = await client.get(f"/v1/employees")
-    list_empl = resp.json()["results"]
+    Author: @pppppplk
+    Issue: #40
+    -------------------------------
+    1. просмотр списка сотрудников
+    2. просмотр списка скиллов
+    3. создание сотрудника
+    4. просмотр списка сотрудников
+    5. создание скилла
+    6. обновление скиллов сотрудника
+    7. просмотр списка сотрудников с фильтром по новому скиллу
+    """
+    # 1. просмотр списка сотрудников
+    resp = await client.get(employees_url)
+    employees = resp.json()["results"]
     assert resp.status_code == 200
     assert resp.json()["total"] == 8
 
-    # 2. Просмотр всех Скиллов (нужны id для заполнения сотрудника)
+    # 2. просмотр списка скиллов (нужны id скиллов для создания сотрудника)
+    resp = await client.get(skills_url)
+    skills = resp.json()
+    assert resp.status_code == 200
+    assert len(skills) == 13
 
-    resp_sk = await client.get(f"/v1/skills")
-    list_skill = resp_sk.json()
-    assert resp_sk.status_code == 200
-    assert len(resp_sk.json()) == 13
-
-    skill_id = list_skill[0]["id"]
-    manager_id = list_empl[0]["id"]
-    role_id = list_empl[0]["role"]["id"]
-    grade_id = list_empl[0]["grade"]["id"]
-
-    # 3. Создание сотрудника (заполняем скиллы)
+    # 3. создание сотрудника (заполняем скиллы)
+    sample_manager_id = employees[0]["id"]
+    sample_role_id = employees[0]["role"]["id"]
+    sample_grade_id = employees[0]["grade"]["id"]
+    sample_skill_id = skills[0]["id"]
 
     resp = await client.post(
         employees_url,
@@ -62,73 +73,73 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
             "middle_name": "Иванович",
             "email": "ivanivan@yandex.ru",
             "phone": "89105678900",
-            "manager_id": manager_id,
-            "role_id": role_id,
-            "grade_id": grade_id,
-            "skills": [{"id": skill_id, "score": 2}],
+            "manager_id": sample_manager_id,
+            "role_id": sample_role_id,
+            "grade_id": sample_grade_id,
+            "skills": [{"id": sample_skill_id, "score": 2}],
         },
     )
     new_employee = resp.json()
+
     assert resp.status_code == 201
     assert new_employee["first_name"] == "Иван"
     assert new_employee["last_name"] == "Иванов"
     assert new_employee["middle_name"] == "Иванович"
     assert new_employee["email"] == "ivanivan@yandex.ru"
     assert new_employee["phone"] == "89105678900"
-    assert new_employee["manager"]["id"] == manager_id
-    assert new_employee["role"]["id"] == role_id
-    assert new_employee["grade"]["id"] == grade_id
-    assert new_employee["skills"][0]["id"] == skill_id
+    assert new_employee["manager"]["id"] == sample_manager_id
+    assert new_employee["role"]["id"] == sample_role_id
+    assert new_employee["grade"]["id"] == sample_grade_id
+    assert new_employee["skills"][0]["id"] == sample_skill_id
     assert new_employee["skills"][0]["score"] == 2
 
-    # 4. Просмотр всех сотрудников (проверка)
-
-    resp = await client.get(f"/v1/employees")
+    # 4. просмотр списка сотрудников (проверка)
+    resp = await client.get(employees_url)
     assert resp.status_code == 200
     assert resp.json()["total"] == 9
 
-    # 5. Создание Скилла
-
-    resp_sk = await client.post(
+    # 5. создание скилла
+    resp = await client.post(
         skills_url,
         json={
             "name": "sql",
             "max_score": 5,
         },
     )
-    new_skill = resp_sk.json()
-    new_skill_id = new_skill["id"]
-    assert resp_sk.status_code == 201
+    new_skill = resp.json()
+
+    assert resp.status_code == 201
     assert new_skill["name"] == "sql"
     assert new_skill["max_score"] == 5
 
-    # 6. Обновление Скилла сотрудника
-
+    # 6. обновление скиллов сотрудника (добавляем созданный скилл)
     resp = await client.patch(
         f"{employees_url}/{new_employee['id']}",
         json={
             "skills": [*new_employee["skills"], {"id": new_skill["id"], "score": 4}],
         },
     )
+    updated_employee = resp.json()
 
-    update_employees = resp.json()
-    assert new_skill["id"] in [skill["id"] for skill in update_employees["skills"]]
+    assert new_skill["id"] in {skill["id"] for skill in updated_employee["skills"]}
     assert resp.status_code == 200
 
-    # 7. Просмотр сотрудников с фильтром по новому скиллу
+    # 7. просмотр списка сотрудников с фильтром по новому скиллу
+    resp = await client.get(employees_url, params={"skill_id": [new_skill["id"]]})
+    filtered_employees = resp.json()["results"]
 
-    resp_filt_skills = await client.get(f"/v1/employees", params={"skill_id": [new_skill_id]})
-    assert resp_filt_skills.status_code == 200
-    empl_skills_ids = [skill["id"] for skill in resp_filt_skills.json()["results"][0]["skills"]]
-
-    assert new_skill_id in empl_skills_ids
+    assert resp.status_code == 200
+    assert new_skill["id"] in {skill["id"] for skill in filtered_employees[0]["skills"]}
 
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("db", "init_db")
+@pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_resources_with_roles_and_grades(
-    client: AsyncClient, employees_url: str, roles_url: str, grades_url: str
+    client: AsyncClient,
+    employees_url: str,
+    roles_url: str,
+    grades_url: str,
 ):
     # 1. Просмотр всех сотрудников
 

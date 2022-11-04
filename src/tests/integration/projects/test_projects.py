@@ -5,7 +5,7 @@ from app.cli.db import init_dev
 
 
 @pytest.fixture
-def init_db():
+def init_data():
     init_dev()
 
 
@@ -16,7 +16,7 @@ def projects_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("db")
+@pytest.mark.usefixtures("runtime_db")
 async def test_simple_projects(client: AsyncClient, projects_url: str):
     """
     Пример Use Case'а: простой сценарий работы с проектами
@@ -76,7 +76,7 @@ async def test_simple_projects(client: AsyncClient, projects_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("db", "init_db")
+@pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_update_project(client: AsyncClient, projects_url: str):
     """
     Use Case: редактирование и закрытие проекта
