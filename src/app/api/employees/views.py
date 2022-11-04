@@ -112,7 +112,7 @@ def update_employee(
     if "skills" in new_data:
         skill_records = []
         for skill in new_data.pop("skills"):
-            skill_records.append(EmployeeSkillLink(skill_id=skill.id, score=skill.score))
+            skill_records.append(EmployeeSkillLink(skill_id=skill["id"], score=skill["score"]))
         employee.skill_records = skill_records
 
     for attr, value in new_data.items():
