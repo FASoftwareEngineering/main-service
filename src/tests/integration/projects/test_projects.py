@@ -1,6 +1,13 @@
 import pytest
 from httpx import AsyncClient
 
+from app.cli.db import init_dev
+
+
+@pytest.fixture
+def init_db():
+    init_dev()
+
 
 @pytest.fixture
 def projects_url() -> str:
@@ -67,6 +74,9 @@ async def test_simple_projects(client: AsyncClient, projects_url: str):
     assert len(resp_data["results"]) == num_projects + 1
 
 
+@pytest.mark.anyio
+@pytest.mark.use_case
+@pytest.mark.usefixtures("db", "init_db")
 async def test_update_project(client: AsyncClient, projects_url: str):
     """
     Use Case: редактирование и закрытие проекта
@@ -134,11 +144,7 @@ async def test_update_project(client: AsyncClient, projects_url: str):
     # 5. изменение атрибута status полученного проекта на closed
     resp = await client.patch(f"{projects_url}/{new_project['id']}", json={"data": {"status": "closed"}})
 
-    status_is_present = False
-    if new_project["status"] == "closed":
-        status_is_present = True
-
-    assert status_is_present
+    assert new_project["status"] == "closed"
     assert resp.status_code == 200
 
     # 6. возврат к списку всех проектов
