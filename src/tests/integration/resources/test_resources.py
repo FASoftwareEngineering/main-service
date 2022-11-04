@@ -2,17 +2,6 @@ from app.cli.db import init_dev
 from httpx import AsyncClient
 import pytest
 
-"""
-0) Инициализация данных 
-1) Просмотр всех сотрудников 
-2) Просмотр всех Скиллов (нужны id для заполнения сотрудника) 
-3) Создание сотрудника (заполняем скиллы) 
-4) Просмотр всех сотрудников (проверка) 
-5) Создание Скилла 
-6) Обновление Скилла сотрудника 
-7) Просмотр сотрудников с фильтром по новому скиллу
-"""
-
 
 @pytest.fixture
 def init_db():
@@ -32,7 +21,9 @@ def skills_url() -> str:
 @pytest.mark.anyio
 @pytest.mark.use_case
 @pytest.mark.usefixtures("db", "init_db")
-async def test_resources_with_skills(client: AsyncClient, employees_url: str, skills_url: str):
+async def test_resources_with_skills(
+    client: AsyncClient, employees_url: str, skills_url: str
+):
     # 1. Просмотр всех сотрудников
 
     resp = await client.get(f"/v1/employees")
@@ -47,7 +38,7 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
     assert resp_sk.status_code == 200
     assert len(resp_sk.json()) == 13
 
-    skills_id = list_skill[0]["id"]
+    skill_id = list_skill[0]["id"]
     manager_id = list_empl[0]["id"]
     role_id = list_empl[0]["role"]["id"]
     grade_id = list_empl[0]["grade"]["id"]
@@ -65,21 +56,21 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
             "manager_id": manager_id,
             "role_id": role_id,
             "grade_id": grade_id,
-            "skills": [{"id": skills_id, "score": 2}],
+            "skills": [{"id": skill_id, "score": 2}],
         },
     )
-    new_employees = resp.json()
+    new_employee = resp.json()
     assert resp.status_code == 201
-    assert new_employees["first_name"] == "Иван"
-    assert new_employees["last_name"] == "Иванов"
-    assert new_employees["middle_name"] == "Иванович"
-    assert new_employees["email"] == "ivanivan@yandex.ru"
-    assert new_employees["phone"] == "89105678900"
-    assert new_employees["manager"]["id"] == manager_id
-    assert new_employees["role"]["id"] == role_id
-    assert new_employees["grade"]["id"] == grade_id
-    assert new_employees["skills"][0]["id"] == skills_id
-    assert new_employees["skills"][0]["score"] == 2
+    assert new_employee["first_name"] == "Иван"
+    assert new_employee["last_name"] == "Иванов"
+    assert new_employee["middle_name"] == "Иванович"
+    assert new_employee["email"] == "ivanivan@yandex.ru"
+    assert new_employee["phone"] == "89105678900"
+    assert new_employee["manager"]["id"] == manager_id
+    assert new_employee["role"]["id"] == role_id
+    assert new_employee["grade"]["id"] == grade_id
+    assert new_employee["skills"][0]["id"] == skill_id
+    assert new_employee["skills"][0]["score"] == 2
 
     # 4. Просмотр всех сотрудников (проверка)
 
@@ -97,6 +88,7 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
         },
     )
     new_skill = resp_sk.json()
+    new_skill_id = new_skill["id"]
     assert resp_sk.status_code == 201
     assert new_skill["name"] == "sql"
     assert new_skill["max_score"] == 5
@@ -104,24 +96,20 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
     # 6. Обновление Скилла сотрудника
 
     resp = await client.patch(
-        f"{employees_url}/{new_employees['id']}",
+        f"{employees_url}/{new_employee['id']}",
         json={
-            "skills": [*new_employees["skills"], {"id": new_skill["id"], "score": 4}],
+            "skills": [*new_employee["skills"], {"id": new_skill["id"], "score": 4}],
         },
     )
 
     update_employees = resp.json()
-    skill_is_present = False
-    for skill in update_employees["skills"]:
-        if skill["id"] == new_skill["id"]:
-            skill_is_present = True
-            break
-
-    assert skill_is_present
+    assert new_skill["id"] in [skill["id"] for skill in update_employees["skills"]]
     assert resp.status_code == 200
 
     # 7. Просмотр сотрудников с фильтром по новому скиллу
 
-    resp_filt_skills = await client.get(f"/v1/employees", params={"skill_id": [14]})
+    resp_filt_skills = await client.get(f"/v1/employees", params={"skill_id": [new_skill_id]})
     assert resp_filt_skills.status_code == 200
-    assert resp_filt_skills.json()["results"][0]["skills"][0]["id"] == 14
+    empl_skills_ids = [skill["id"] for skill in resp_filt_skills.json()["results"][0]["skills"]]
+
+    assert new_skill_id in empl_skills_ids
