@@ -34,10 +34,10 @@ def grades_url() -> str:
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_resources_with_skills(client: AsyncClient, employees_url: str, skills_url: str):
     """
-    Use Case: работа со скиллами (навыками) сотрудников
+    Use Case: работа со скиллами (навыками) сотрудника
 
     Author: @pppppplk
-    Issue: #40
+    Issue: #40 #53
     -------------------------------
     1. просмотр списка сотрудников
     2. просмотр списка скиллов
@@ -49,9 +49,11 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
     """
     # 1. просмотр списка сотрудников
     resp = await client.get(employees_url)
-    employees = resp.json()["results"]
+    employees_data = resp.json()
+    employees = employees_data["results"]
+
     assert resp.status_code == 200
-    assert resp.json()["total"] == 8
+    assert employees_data["total"] == 8
 
     # 2. просмотр списка скиллов (нужны id скиллов для создания сотрудника)
     resp = await client.get(skills_url)
@@ -121,8 +123,8 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
     )
     updated_employee = resp.json()
 
-    assert new_skill["id"] in {skill["id"] for skill in updated_employee["skills"]}
     assert resp.status_code == 200
+    assert new_skill["id"] in {skill["id"] for skill in updated_employee["skills"]}
 
     # 7. просмотр списка сотрудников с фильтром по новому скиллу
     resp = await client.get(employees_url, params={"skill_id": [new_skill["id"]]})
@@ -141,32 +143,47 @@ async def test_resources_with_roles_and_grades(
     roles_url: str,
     grades_url: str,
 ):
-    # 1. Просмотр всех сотрудников
+    """
+    Use Case: работа с ролями и грейдами сотрудника
 
-    resp = await client.get(f"/v1/employees")
-    list_empl = resp.json()["results"]
+    Author: @ruki011
+    Issue: #40 #53
+    -------------------------------
+    1. просмотр списка сотрудников
+    2.1 просмотр списка грейдов
+    2.2 просмотр списка ролей
+    3. создание сотрудника
+    4. просмотр списка сотрудников
+    5.1. создание грейдов
+    5.2. создание роли
+    6. обновление роли и грейда сотрудника
+    7. просмотр списка сотрудников с фильтром по новой роли
+    8. просмотр списка сотрудников с фильтром по новому грейду
+    """
+    # 1. просмотр списка сотрудников
+    resp = await client.get(employees_url)
+    employees_data = resp.json()
+    employees = employees_data["results"]
+
     assert resp.status_code == 200
-    assert resp.json()["total"] == 8
+    assert employees_data["total"] == 8
 
-    # 2.1 Просмотр всех грейдов (нужны id для заполнения сотрудника)
+    # 2.1 просмотр списка грейдов
+    resp = await client.get(grades_url)
+    grades = resp.json()
+    assert resp.status_code == 200
+    assert len(grades) == 5
 
-    resp_sk = await client.get(f"/v1/grades")
-    grades = resp_sk.json()
-    assert resp_sk.status_code == 200
-    assert len(resp_sk.json()) == 5
+    # 2.2 просмотр списка ролей
+    resp = await client.get(f"/v1/roles")
+    roles = resp.json()
+    assert resp.status_code == 200
+    assert len(roles) == 5
 
-    grade_id = grades[0]["id"]
-    manager_id = list_empl[0]["id"]
-    role_id = list_empl[0]["role"]["id"]
-    skill_id = list_empl[2]["skills"][0]["id"]
-
-    # 2.2 Просмотр всех ролей (нужны id для заполнения сотрудника)
-
-    resp_sk = await client.get(f"/v1/roles")
-    assert resp_sk.status_code == 200
-    assert len(resp_sk.json()) == 5
-
-    # 3. Создание сотрудника (заполняем грейд и роль)
+    # 3. создание сотрудника
+    sample_manager_id = employees[0]["id"]
+    sample_role_id = roles[2]["id"]
+    sample_grade_id = roles[2]["grades"][1]["id"]
 
     resp = await client.post(
         employees_url,
@@ -176,55 +193,55 @@ async def test_resources_with_roles_and_grades(
             "middle_name": "Иванович",
             "email": "ivanivan@yandex.ru",
             "phone": "89105678900",
-            "manager_id": manager_id,
-            "role_id": role_id,
-            "grade_id": grade_id,
-            "skills": [{"id": skill_id, "score": 2}],
+            "manager_id": sample_manager_id,
+            "role_id": sample_role_id,
+            "grade_id": sample_grade_id,
         },
     )
     new_employee = resp.json()
+
     assert resp.status_code == 201
     assert new_employee["first_name"] == "Иван"
     assert new_employee["last_name"] == "Иванов"
     assert new_employee["middle_name"] == "Иванович"
     assert new_employee["email"] == "ivanivan@yandex.ru"
     assert new_employee["phone"] == "89105678900"
-    assert new_employee["manager"]["id"] == manager_id
-    assert new_employee["role"]["id"] == role_id
-    assert new_employee["grade"]["id"] == grade_id
-    assert new_employee["skills"][0]["id"] == skill_id
-    assert new_employee["skills"][0]["score"] == 2
+    assert new_employee["manager"]["id"] == sample_manager_id
+    assert new_employee["role"]["id"] == sample_role_id
+    assert new_employee["grade"]["id"] == sample_grade_id
 
-    # 4. Просмотр всех сотрудников (проверка)
-    resp = await client.get(f"/v1/employees")
+    # 4. просмотр списка сотрудников (проверка)
+    resp = await client.get(employees_url)
     assert resp.status_code == 200
     assert resp.json()["total"] == 9
 
-    # 5. Создание грейда+роли
+    # 5.1. создание грейдов
+    new_grades = []
+    for grade_name in ["junior+", "middle+"]:
+        resp = await client.post(grades_url, json={"name": grade_name})
+        new_grade = resp.json()
+        assert resp.status_code == 201
+        assert new_grade["name"] == grade_name
+        new_grades.append(new_grade)
 
-    # Грейд
-    resp_sk = await client.post(
-        grades_url,
+    # 5.2. создание роли
+    resp = await client.post(
+        roles_url,
         json={
-            "name": "Junior",
+            "name": "developer",
+            "grades": [{"id": grade["id"]} for grade in new_grades],
         },
     )
+    new_role = resp.json()
 
-    new_grade = resp_sk.json()
-    assert resp_sk.status_code == 201
-    assert new_grade["name"] == "Junior"
-
-    # Роль
-    resp_sk = await client.post(
-        roles_url,
-        json={"name": "developer", "grades": [{"id": new_grade["id"]}]},
-    )
-    new_role = resp_sk.json()
-    assert resp_sk.status_code == 201
+    assert resp.status_code == 201
     assert new_role["name"] == "developer"
-    assert new_role["grades"][0]["name"] == new_grade["name"]
+    assert len(new_role["grades"]) == len(new_grades)
+    for grade, expected in zip(new_role["grades"], new_grades):
+        assert grade["name"] == expected["name"]
 
-    # 6. Обновление грейда+роли сотрудника
+    # 6. обновление роли и грейда сотрудника
+    new_grade = new_grades[0]
 
     resp = await client.patch(
         f"{employees_url}/{new_employee['id']}",
@@ -233,19 +250,22 @@ async def test_resources_with_roles_and_grades(
             "grade_id": new_grade["id"],
         },
     )
+    updated_employee = resp.json()
+
     assert resp.status_code == 200
-    update_employee = resp.json()
-    assert new_role["id"] == update_employee["role"]["id"]
-    assert new_grade["id"] == update_employee["grade"]["id"]
+    assert updated_employee["role"]["id"] == new_role["id"]
+    assert updated_employee["grade"]["id"] == new_grade["id"]
 
-    # 7 Просмотр сотрудников с фильтром по новому грейду
+    # 7. просмотр списка сотрудников с фильтром по новой роли
+    resp = await client.get(employees_url, params={"grade_id": new_grade["id"]})
+    filtered_employees = resp.json()["results"]
 
-    resp_filt_grades = await client.get(f"/v1/employees", params={"grade_id": new_grade["id"]})
-    assert resp_filt_grades.status_code == 200
-    assert resp_filt_grades.json()["results"][0]["grade"]["id"] == new_grade["id"]
+    assert resp.status_code == 200
+    assert filtered_employees[0]["grade"]["id"] == new_grade["id"]
 
-    # 8 Просмотр сотрудников с фильтром по новой роли
+    # 8. просмотр списка сотрудников с фильтром по новому грейду
+    resp = await client.get(employees_url, params={"role_id": new_role["id"]})
+    filtered_employees = resp.json()["results"]
 
-    resp_filt_roles = await client.get(f"/v1/employees", params={"role_id": new_role["id"]})
-    assert resp_filt_roles.status_code == 200
-    assert resp_filt_roles.json()["results"][0]["role"]["id"] == new_role["id"]
+    assert resp.status_code == 200
+    assert filtered_employees[0]["role"]["id"] == new_role["id"]
