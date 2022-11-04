@@ -2,13 +2,14 @@ import typing as t
 
 from sqlalchemy import sql
 
-from app.core.db import SessionT, SurrogateKeyMixin, SoftDeleteMixin
+from app.core.db import SessionT, SoftDeleteMixin, SurrogateKeyMixin
 
 _M = t.TypeVar("_M", bound=t.Union[SurrogateKeyMixin, SoftDeleteMixin])
 
 
 class CRUD(t.Generic[_M]):
-    """
+    """Generic CRUD methods
+
     Generic-реализация репозитория для выполнения CRUD операций над объектами,
     производными от SurrogateKeyMixin и SoftDeleteMixin
     """
@@ -17,14 +18,20 @@ class CRUD(t.Generic[_M]):
         self.session = session
         self.model_cls = model_cls
 
-    def save(self, entity: _M) -> _M:
+    def save(self, entity: _M, commit: bool = True) -> _M:
         self.session.add(entity)
-        self.session.flush()
+        if commit:
+            self.session.commit()
+        else:
+            self.session.flush()
         return entity
 
-    def save_all(self, entities: list[_M]) -> list[_M]:
+    def save_all(self, entities: list[_M], commit: bool = True) -> list[_M]:
         self.session.add_all(entities)
-        self.session.flush()
+        if commit:
+            self.session.commit()
+        else:
+            self.session.flush()
         return entities
 
     def get_by_id(self, id_: int, _include_deleted: bool = False) -> _M | None:
@@ -62,4 +69,8 @@ class CRUD(t.Generic[_M]):
 
         stmt = stmt.where(self.model_cls.id == id_)
         res = self.session.execute(stmt)
-        return res.rowcount > 0
+        return res.rowcount > 0  # type: ignore
+
+
+def count_rows(session: SessionT, stmt) -> int:
+    return session.scalar(sql.select(sql.func.count()).select_from(stmt))

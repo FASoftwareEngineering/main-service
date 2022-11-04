@@ -1,12 +1,13 @@
 from datetime import datetime
 
 import sqlalchemy as sa
+from sqlalchemy import event
 from sqlalchemy.orm import (
-    sessionmaker,
+    ORMExecuteState,
+    Session,
     as_declarative,
     declarative_mixin,
-    Session,
-    ORMExecuteState,
+    sessionmaker,
     with_loader_criteria,
 )
 
@@ -63,7 +64,7 @@ class SoftDeleteMixin:
     deleted: bool = sa.Column(sa.Boolean, default=False, nullable=False)
 
 
-@sa.event.listens_for(Session, "do_orm_execute")
+@event.listens_for(Session, "do_orm_execute")
 def _add_filtering_criteria(execute_state: ORMExecuteState):
     if (
         not execute_state.is_column_load
@@ -73,9 +74,9 @@ def _add_filtering_criteria(execute_state: ORMExecuteState):
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(
                 SoftDeleteMixin,
-                lambda cls: cls.deleted == sa.false(),
+                lambda x: x.deleted == sa.false(),
                 include_aliases=True,
-            )
+            ),
         )
 
 
