@@ -123,10 +123,13 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
 
     assert new_skill_id in empl_skills_ids
 
+
 @pytest.mark.anyio
 @pytest.mark.use_case
 @pytest.mark.usefixtures("db", "init_db")
-async def test_resources_with_roles_and_grades(client: AsyncClient, employees_url: str, roles_url: str, grades_url: str):
+async def test_resources_with_roles_and_grades(
+    client: AsyncClient, employees_url: str, roles_url: str, grades_url: str
+):
     # 1. Просмотр всех сотрудников
 
     resp = await client.get(f"/v1/employees")
@@ -144,7 +147,7 @@ async def test_resources_with_roles_and_grades(client: AsyncClient, employees_ur
     grade_id = grades[0]["id"]
     manager_id = list_empl[0]["id"]
     role_id = list_empl[0]["role"]["id"]
-    skill_id = list_empl[2]['skills'][0]['id']
+    skill_id = list_empl[2]["skills"][0]["id"]
 
     # 2.2 Просмотр всех ролей (нужны id для заполнения сотрудника)
 
@@ -203,15 +206,12 @@ async def test_resources_with_roles_and_grades(client: AsyncClient, employees_ur
     # Роль
     resp_sk = await client.post(
         roles_url,
-        json={
-            "name": "developer",
-            'grades': [{'id': new_grade['id']}]
-        },
+        json={"name": "developer", "grades": [{"id": new_grade["id"]}]},
     )
     new_role = resp_sk.json()
     assert resp_sk.status_code == 201
     assert new_role["name"] == "developer"
-    assert new_role["grades"][0]['name'] == new_grade['name']
+    assert new_role["grades"][0]["name"] == new_grade["name"]
 
     # 6. Обновление грейда+роли сотрудника
 
@@ -224,14 +224,14 @@ async def test_resources_with_roles_and_grades(client: AsyncClient, employees_ur
     )
     assert resp.status_code == 200
     update_employee = resp.json()
-    assert new_role['id'] == update_employee["role"]['id']
-    assert new_grade['id'] == update_employee["grade"]['id']
+    assert new_role["id"] == update_employee["role"]["id"]
+    assert new_grade["id"] == update_employee["grade"]["id"]
 
     # 7 Просмотр сотрудников с фильтром по новому грейду
 
-    resp_filt_grades = await client.get(f"/v1/employees", params={"grade_id": new_grade['id']})
+    resp_filt_grades = await client.get(f"/v1/employees", params={"grade_id": new_grade["id"]})
     assert resp_filt_grades.status_code == 200
-    assert resp_filt_grades.json()["results"][0]["grade"]["id"] == new_grade['id']
+    assert resp_filt_grades.json()["results"][0]["grade"]["id"] == new_grade["id"]
 
     # 8 Просмотр сотрудников с фильтром по новой роли
 

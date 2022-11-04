@@ -37,7 +37,6 @@ class Employee(User):
         back_populates="employees",
     )
 
-    # cascade="save-update, merge, delete, delete-orphan"
     # https://stackoverflow.com/questions/23699651/dependency-rule-tried-to-blank-out-primary-key-in-sqlalchemy-when-foreign-key-c
     skill_records: list["EmployeeSkillLink"] = relationship(
         "EmployeeSkillLink",
