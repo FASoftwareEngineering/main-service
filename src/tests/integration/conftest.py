@@ -7,7 +7,7 @@ from factory import random
 from httpx import AsyncClient
 
 os.environ["APP_DEBUG"] = "False"
-os.environ["APP_DB_URI"] = "postgresql://postgres:123456@127.0.0.1:5432/test-main-service-bd"
+os.environ["APP_DB_URI"] = "postgresql://postgres:postgres@127.0.0.1:5434/test_postgres"
 
 from app.main import app  # noqa
 from app.config import config  # noqa
