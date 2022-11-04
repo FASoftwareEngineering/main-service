@@ -1,6 +1,7 @@
-from app.cli.db import init_dev
-from httpx import AsyncClient
 import pytest
+from httpx import AsyncClient
+
+from app.cli.db import init_dev
 
 
 @pytest.fixture
