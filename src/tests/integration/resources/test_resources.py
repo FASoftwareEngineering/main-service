@@ -21,9 +21,7 @@ def skills_url() -> str:
 @pytest.mark.anyio
 @pytest.mark.use_case
 @pytest.mark.usefixtures("db", "init_db")
-async def test_resources_with_skills(
-    client: AsyncClient, employees_url: str, skills_url: str
-):
+async def test_resources_with_skills(client: AsyncClient, employees_url: str, skills_url: str):
     # 1. Просмотр всех сотрудников
 
     resp = await client.get(f"/v1/employees")
