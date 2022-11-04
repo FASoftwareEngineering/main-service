@@ -38,7 +38,7 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
 
     Author: @pppppplk
     Issue: #40 #53
-    -------------------------------
+    --------------
     1. просмотр списка сотрудников
     2. просмотр списка скиллов
     3. создание сотрудника
@@ -148,7 +148,7 @@ async def test_resources_with_roles_and_grades(
 
     Author: @ruki011
     Issue: #40 #53
-    -------------------------------
+    --------------
     1. просмотр списка сотрудников
     2.1 просмотр списка грейдов
     2.2 просмотр списка ролей
