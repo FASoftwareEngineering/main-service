@@ -1,3 +1,3 @@
 set -a
-source .env.prod
+source .env
 docker-compose up -d
