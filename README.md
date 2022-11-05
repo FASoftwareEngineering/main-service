@@ -13,7 +13,7 @@
 
 - **[Требования](https://docs.google.com/spreadsheets/d/1GofXFF30oyyuv8pY4ic6NPHMvqzgblUg3MaRuwBuDck/edit#gid=760256269)**
 - **[Дизайн архитектуры](https://app.diagrams.net/#G11At2G5mZ-JMfmA6tRvXmPy5N2Jv4FLdJ)**
-- **[Дизайн хранилища](https://dbdiagram.io/d/6355eb304709410195c53272)**
+- **[Дизайн хранилища](https://dbdiagram.io/?lang=en/d/6355eb304709410195c53272)**
 
 ## Структура проекта
 
