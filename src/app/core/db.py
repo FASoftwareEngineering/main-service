@@ -80,6 +80,14 @@ def _add_filtering_criteria(execute_state: ORMExecuteState):
         )
 
 
+@event.listens_for(Session, "do_orm_execute")
+def _add_soft_delete_hook(execute_state: ORMExecuteState):
+    if (execute_state.is_update or execute_state.is_delete) and issubclass(
+        execute_state.bind_mapper.class_, SoftDeleteMixin
+    ):
+        pass
+
+
 class StrSizes:
     XS = 16
     SM = 32
