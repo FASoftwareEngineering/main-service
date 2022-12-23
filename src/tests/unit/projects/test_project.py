@@ -10,7 +10,7 @@ def init_data():
 
 
 @pytest.fixture
-def grades_url() -> str:
+def projects_url() -> str:
     return "/v1/projects"
 
 
