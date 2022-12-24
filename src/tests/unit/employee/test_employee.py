@@ -24,8 +24,10 @@ def employees_by_id_url() -> str:
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_create_employee(client: AsyncClient, employees_url: str):
     # получение менеджеров из начального наполнения
-    resp_m = await client.get(f"/v1/managers")
-    managers = resp_m.json()
+    resp_e = await client.get(f"/v1/employees")
+    managers = resp_e.json()['results']
+
+    print(managers)
 
     # получение роли из начального наполнения
     resp_r = await client.get(f"/v1/roles")
@@ -48,9 +50,9 @@ async def test_create_employee(client: AsyncClient, employees_url: str):
             "middle_name": "Иванович",
             "email": "ivani@yandex.ru",
             "phone": "89705678900",
-            "manager_id": managers[0],
-            "role_id": roles[0],
-            "grade_id": grades[0],
+            "manager_id": managers[0]["id"],
+            "role_id": roles[0]["id"],
+            "grade_id": grades[0]["id"],
             "skills": [{"id": skill["id"], "score": 2} for skill in our_skills],
         },
     )
@@ -62,9 +64,9 @@ async def test_create_employee(client: AsyncClient, employees_url: str):
     assert new_employee["middle_name"] == "Иванович"
     assert new_employee["email"] == "ivani@yandex.ru"
     assert new_employee["phone"] == "89705678900"
-    assert new_employee["manager"] == managers[0]
-    assert new_employee["role"] == roles[0]
-    assert new_employee["grade"] == grades[0]
+    assert new_employee["manager"]['id'] == managers[0]["id"]
+    assert new_employee["role"]["id"] == roles[0]["id"]
+    assert new_employee["grade"]["id"] == grades[0]["id"]
     assert len(new_employee["skills"]) == len(our_skills)
     for skill, expected in zip(
         sorted(new_employee["skills"], key=lambda x: x["id"]), sorted(our_skills, key=lambda x: x["id"])
@@ -78,23 +80,23 @@ async def test_create_employee(client: AsyncClient, employees_url: str):
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_get_employee_by_id(client: AsyncClient, employees_by_id_url: str):
 
-    resp = await client.get(employees_by_id_url.format(value=1))
+    resp = await client.get(employees_by_id_url.format(value=5))
     employee = resp.json()
 
     assert resp.status_code == 200
-    assert employee["id"] == 1
+    assert employee["id"] == 5
 
 
 @pytest.mark.anyio
 @pytest.mark.use_case
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_delete_employee_by_id(client: AsyncClient, employees_by_id_url: str):
-    resp = await client.get(employees_by_id_url.format(value=1))
+    resp = await client.get(employees_by_id_url.format(value=5))
     assert resp.status_code == 200
 
-    await client.delete(employees_by_id_url.format(value=1))
+    await client.delete(employees_by_id_url.format(value=5))
 
-    resp = await client.get(employees_by_id_url.format(value=1))
+    resp = await client.get(employees_by_id_url.format(value=5))
     assert resp.status_code == 404
 
 
@@ -107,15 +109,23 @@ async def test_get_employees(client: AsyncClient, employees_url: str):
     employees_data = resp.json()
 
     assert resp.status_code == 200
-    assert employees_data["total"] == 5
+    assert employees_data["total"] == 8
 
 
 @pytest.mark.anyio
 @pytest.mark.use_case
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_update_employee(client: AsyncClient, employees_url: str, employees_by_id_url: str):
-
     # создание сотрудника
+
+    # получение роли из начального наполнения
+    resp_r = await client.get(f"/v1/roles")
+    roles = resp_r.json()
+
+    # получение грейдов из начального наполнения
+    resp_g = await client.get(f"/v1/grades")
+    grades = resp_g.json()
+
     resp = await client.post(
         employees_url,
         json={
@@ -124,6 +134,9 @@ async def test_update_employee(client: AsyncClient, employees_url: str, employee
             "middle_name": "Олеговна",
             "email": "ivn@yandex.ru",
             "phone": "89103389000",
+            "role_id": roles[0]["id"],
+            "grade_id": grades[0]["id"],
+
         },
     )
     new_employee = resp.json()
