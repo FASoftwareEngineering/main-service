@@ -3,12 +3,14 @@ version: "3.9"
 services:
   app:
     container_name: app
-    build: src/.
+    build:
+      context: ../src/
+      dockerfile: ../src/Dockerfile
     restart: on-failure
     env_file:
       - .env
     volumes:
-      - ./src/app:/src/app
+      - ../src/app:/src/app
     networks:
       - mynetwork
     depends_on:
@@ -28,7 +30,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./deployments/volumes/postgres/postgres:/data/postgres
+      - ./volumes/postgres/postgres:/data/postgres
     networks:
       - mynetwork
 
@@ -45,7 +47,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - ./deployments/volumes/postgres/app_tests_postgres:/data/app_tests_postgres
+      - ./volumes/postgres/app_tests_postgres:/data/app_tests_postgres
     networks:
       - mynetwork
 
@@ -62,9 +64,9 @@ services:
       - "443:443/udp"
       - "5000:5000"
     volumes:
-      - ./configs/Caddyfile:/etc/caddy/Caddyfile
-      - ./deployments/volumes/caddy/data:/data
-      - ./deployments/volumes/caddy/config:/config
+      - ../configs/Caddyfile:/etc/caddy/Caddyfile
+      - ./volumes/caddy/data:/data
+      - ./volumes/caddy/config:/config
     networks:
       - mynetwork
 
@@ -80,7 +82,7 @@ services:
     ports:
       - "5050:80"
     volumes:
-      - ./deployments/volumes/postgres/pgadmin:/root/.pgadmin
+      - ./volumes/postgres/pgadmin:/root/.pgadmin
     networks:
       - mynetwork
 
