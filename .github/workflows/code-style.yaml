@@ -26,7 +26,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: pip install isort==5.10.1 black==22.8.0
+      - run: pip install -r requirements.dev.txt
+
+      - name: Pylint
+        run: pylint app
+
+      - name: Wemake-python-styleguide
+        run: flake8 app
 
       - name: Isort
         run: isort . --check-only --diff
