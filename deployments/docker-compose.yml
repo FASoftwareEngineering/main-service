@@ -34,22 +34,22 @@ services:
     networks:
       - mynetwork
 
-  app_tests_postgres:
-    container_name: app-tests-postgres
-    image: postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: "app_tests_postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      PGDATA: /data/app_tests_postgres
-
-    ports:
-      - "5434:5432"
-    volumes:
-      - ./volumes/postgres/app_tests_postgres:/data/app_tests_postgres
-    networks:
-      - mynetwork
+  #  app_tests_postgres:
+  #    container_name: app-tests-postgres
+  #    image: postgres
+  #    restart: unless-stopped
+  #    environment:
+  #      POSTGRES_DB: "app_tests_postgres"
+  #      POSTGRES_USER: "postgres"
+  #      POSTGRES_PASSWORD: "postgres"
+  #      PGDATA: /data/app_tests_postgres
+  #
+  #    ports:
+  #      - "5434:5432"
+  #    volumes:
+  #      - ./volumes/postgres/app_tests_postgres:/data/app_tests_postgres
+  #    networks:
+  #      - mynetwork
 
   caddy:
     container_name: caddy-reverse-proxy
@@ -64,27 +64,39 @@ services:
       - "443:443/udp"
       - "5000:5000"
     volumes:
-      - ../configs/Caddyfile:/etc/caddy/Caddyfile
+      - ../configs/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./volumes/caddy/data:/data
       - ./volumes/caddy/config:/config
     networks:
       - mynetwork
 
-  pgadmin:
-    container_name: utils-pgadmin
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${DOCKER_PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: "False"
+#  authelia:
+#    container_name: authelia
+#    image: authelia/authelia
+#    restart: unless-stopped
+#
+#    ports:
+#      - "9091:9091"
+#    volumes:
+#      - ../configs/authelia:/config
+#    networks:
+#      - mynetwork
 
-    ports:
-      - "5050:80"
-    volumes:
-      - ./volumes/postgres/pgadmin:/root/.pgadmin
-    networks:
-      - mynetwork
+#  pgadmin:
+#    container_name: utils-pgadmin
+#    image: dpage/pgadmin4
+#    restart: unless-stopped
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${DOCKER_PGADMIN_DEFAULT_EMAIL}
+#      PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_DEFAULT_PASSWORD}
+#      PGADMIN_CONFIG_SERVER_MODE: "False"
+#
+#    ports:
+#      - "5050:80"
+#    volumes:
+#      - ./volumes/postgres/pgadmin:/root/.pgadmin
+#    networks:
+#      - mynetwork
 
 networks:
   mynetwork:
