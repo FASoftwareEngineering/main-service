@@ -6,11 +6,11 @@ import sqlalchemy as sa
 from factory import random
 from fastapi import FastAPI
 from httpx import AsyncClient
-from sqlalchemy.engine import make_url, Engine
+from sqlalchemy.engine import Engine, make_url
 from sqlalchemy.orm import close_all_sessions
 
 from app.config import Config
-from app.core.db import SessionT, db, BaseModel
+from app.core.db import BaseModel, SessionT, db
 from app.main import create_app
 
 

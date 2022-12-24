@@ -8,7 +8,7 @@ from app.api.employees.models import Employee
 from app.api.models import EmployeeSkillLink
 from app.api.projects.constants import ProjectStatuses
 from app.api.projects.models import Project, ProjectManager, ProjectOwner
-from app.core.db import BaseModel, db, SessionT
+from app.core.db import BaseModel, SessionT, db
 
 app = typer.Typer()
 
