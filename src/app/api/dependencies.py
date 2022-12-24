@@ -5,11 +5,8 @@ from app.core.schemas import BaseSchema
 
 
 def get_session() -> t.Generator[SessionT, None, None]:
-    session = db.session_factory()
-    try:
+    with db.session_factory() as session:
         yield session
-    finally:
-        session.close()
 
 
 class PaginationQuery(BaseSchema):

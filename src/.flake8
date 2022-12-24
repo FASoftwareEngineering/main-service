@@ -1,9 +1,17 @@
 [flake8]
 max-line-length = 110
-extend-ignore = E203, S104, WPS473, WPS604, WPS441, WPS432, WPS204, WPS600, WPS337, WPS110, WPS202, WPS214, WPS215, D102, D103, D100, D101, WPS111, WPS305, D107, B008, WPS420, WPS306, WPS400, WPS229, WPS226, WPS114, WPS404, WPS221, WPS465, WPS410, D400, WPS501, WPS210, WPS115
+# https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/violations/index.html
+extend-ignore =
+    B008,
+    D100, D101, D102, D103, D104, D105, D106, D107, D400,
+    F401,
+    WPS110, WPS111, WPS114, WPS115,
+    WPS202, WPS204, WPS210, WPS214, WPS215, WPS221, WPS226, WPS229,
+    WPS305, WPS306, WPS337,
+    WPS400, WPS404, WPS410, WPS412, WPS420, WPS432, WPS441, WPS465, WPS473,
+    WPS600, WPS604,
 inline-quotes = "
 exclude =
-    */__init__.py
     migrations/*
-    conftest.py
     tests/*
+    */sandbox/*
