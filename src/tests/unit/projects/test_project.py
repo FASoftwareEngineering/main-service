@@ -2,7 +2,6 @@ import pytest
 from httpx import AsyncClient
 
 from app.cli.db import init_dev
-from app.api.projects.constants import ProjectStatuses
 
 
 @pytest.fixture
