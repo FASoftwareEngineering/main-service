@@ -72,7 +72,7 @@ def create_employee(
     new_data["role_grade"] = role_grade
     new_data["skill_records"] = skill_records
 
-    if not services.employee_exists(session, data.manager_id):
+    if data.manager_id and not services.employee_exists(session, data.manager_id):
         _raise_404(f"Manager with id={data.manager_id} not found")
 
     employee = services.get_employee_by_email(session, data.email)
