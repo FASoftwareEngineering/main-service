@@ -2,6 +2,7 @@ import pytest
 from httpx import AsyncClient
 
 from app.cli.db import init_dev
+from app.api.projects.constants import ProjectStatuses
 
 
 @pytest.fixture
@@ -24,18 +25,11 @@ def projects_by_id_url() -> str:
 @pytest.mark.usefixtures("runtime_db", "init_data")
 async def test_create_project(client: AsyncClient, projects_url: str):
 
-    resp = await client.post(
-        projects_url,
-        json={
-            "code": f"PROJ_1",
-            "name": f"Проект #1",
-        },
-    )
+    resp = await client.post(projects_url, json={"owner_id": 1, "code": "#PROJ 1", "name": "Проект 1"})
     new_project = resp.json()
 
     assert resp.status_code == 201
-    assert new_project["name"] == "Проект #1"
-    assert new_project["code"] == "PROJ_1"
+    assert new_project["code"] == "#PROJ 1"
 
 
 @pytest.mark.anyio
@@ -46,7 +40,7 @@ async def test_get_project_by_id(client: AsyncClient, projects_by_id_url: str):
     resp = await client.get(projects_by_id_url.format(value=1))
     project = resp.json()
 
-    assert project.status_code == 200
+    assert resp.status_code == 200
     assert project["id"] == 1
 
 
@@ -72,7 +66,7 @@ async def test_get_projects(client: AsyncClient, projects_url: str):
     projects = resp.json()
 
     assert resp.status_code == 200
-    assert len(projects) == 5
+    assert len(projects) == 4
 
 
 @pytest.mark.anyio
@@ -83,10 +77,7 @@ async def test_update_project(client: AsyncClient, projects_url: str, projects_b
     # создание проекта
     resp = await client.post(
         projects_url,
-        json={
-            "code": f"PROJ_2",
-            "name": f"Проект #2",
-        },
+        json={"code": f"PROJ_6", "name": f"Проект #6", "owner_id": 1},
     )
     new_project = resp.json()
     assert resp.status_code == 201
@@ -95,11 +86,11 @@ async def test_update_project(client: AsyncClient, projects_url: str, projects_b
     resp = await client.patch(
         projects_by_id_url.format(value=new_project["id"]),
         json={
-            "code": f"PROJ_3",
-            "name": f"Проект #3",
+            "code": f"PROJ_7",
+            "name": f"Проект #7",
         },
     )
     new_project = resp.json()
     assert resp.status_code == 200
-    assert new_project["code"] == "PROJ_3"
-    assert new_project["name"] == "Проект #3"
+    assert new_project["code"] == "PROJ_7"
+    assert new_project["name"] == "Проект #7"
