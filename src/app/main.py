@@ -51,4 +51,4 @@ def include_routers(app: FastAPI, conf: Config) -> None:
 app = create_app(config)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False, use_colors=True)
+    uvicorn.run("main:app", port=8000, reload=True, use_colors=True)
