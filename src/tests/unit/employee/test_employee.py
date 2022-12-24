@@ -25,7 +25,7 @@ def employees_by_id_url() -> str:
 async def test_create_employee(client: AsyncClient, employees_url: str):
     # получение менеджеров из начального наполнения
     resp_e = await client.get(f"/v1/employees")
-    managers = resp_e.json()['results']
+    managers = resp_e.json()["results"]
 
     print(managers)
 
@@ -64,7 +64,7 @@ async def test_create_employee(client: AsyncClient, employees_url: str):
     assert new_employee["middle_name"] == "Иванович"
     assert new_employee["email"] == "ivani@yandex.ru"
     assert new_employee["phone"] == "89705678900"
-    assert new_employee["manager"]['id'] == managers[0]["id"]
+    assert new_employee["manager"]["id"] == managers[0]["id"]
     assert new_employee["role"]["id"] == roles[0]["id"]
     assert new_employee["grade"]["id"] == grades[0]["id"]
     assert len(new_employee["skills"]) == len(our_skills)
@@ -136,7 +136,6 @@ async def test_update_employee(client: AsyncClient, employees_url: str, employee
             "phone": "89103389000",
             "role_id": roles[0]["id"],
             "grade_id": grades[0]["id"],
-
         },
     )
     new_employee = resp.json()
