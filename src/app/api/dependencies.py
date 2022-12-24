@@ -1,11 +1,11 @@
 import typing as t
 
-from app.core.db import SessionLocal, SessionT
+from app.core.db import db, SessionT
 from app.core.schemas import BaseSchema
 
 
 def get_session() -> t.Generator[SessionT, None, None]:
-    session = SessionLocal()
+    session = db.session_factory()
     try:
         yield session
     finally:

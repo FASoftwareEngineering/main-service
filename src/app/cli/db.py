@@ -8,7 +8,7 @@ from app.api.employees.models import Employee
 from app.api.models import EmployeeSkillLink
 from app.api.projects.constants import ProjectStatuses
 from app.api.projects.models import Project, ProjectManager, ProjectOwner
-from app.core.db import BaseModel, SessionLocal, SessionT, engine
+from app.core.db import BaseModel, db, SessionT
 
 app = typer.Typer()
 
@@ -16,7 +16,7 @@ app = typer.Typer()
 @app.command(name="init-dev")
 def init_dev(projects: bool = True, employees: bool = True) -> None:
     _clear()
-    session = SessionLocal()
+    session = db.session_factory()
 
     if projects:
         _create_projects(session)
@@ -260,5 +260,5 @@ def _get_role_grade(session: SessionT, role: Role, grade: Grade) -> RoleGradeLin
 
 
 def _clear() -> None:
-    BaseModel.metadata.drop_all(engine)
-    BaseModel.metadata.create_all(engine)
+    BaseModel.metadata.drop_all(db.engine)
+    BaseModel.metadata.create_all(db.engine)

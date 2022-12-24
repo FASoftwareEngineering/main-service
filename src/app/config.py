@@ -9,6 +9,7 @@ _ENV_PREFIX = "APP_"
 
 class Config(BaseSettings):
     BASE_DIR: DirectoryPath = _BASE_DIR
+
     DEBUG: bool = Field(default=False, env=f"{_ENV_PREFIX}DEBUG")
 
     API_PREFIX: str = "/api"
@@ -16,7 +17,6 @@ class Config(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
 
     SQLALCHEMY_DATABASE_URI: str | None = Field(env=f"{_ENV_PREFIX}DB_URI")
-    SQLALCHEMY_ECHO: bool = DEBUG
 
     LOGGING_CONFIG: dict[str, t.Any] = {
         "handlers": [
@@ -31,8 +31,6 @@ class Config(BaseSettings):
     SENTRY_DSN: str | None = Field(env=f"{_ENV_PREFIX}SENTRY_DSN")
 
     class Config:
-        """ENV config"""
-
         env_file = _BASE_DIR.parent.parent / ".env"
         env_prefix = _ENV_PREFIX
 

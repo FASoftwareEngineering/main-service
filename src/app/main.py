@@ -9,6 +9,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app import api
 from app.config import Config, config
+from app.core.db import db
 
 
 def create_app(conf: Config) -> FastAPI:
@@ -47,10 +48,8 @@ def add_middlewares(app: FastAPI, conf: Config) -> None:
 
 
 def delayed_configuration(conf: Config) -> None:
-    sentry_sdk.init(
-        dsn=conf.SENTRY_DSN,
-        traces_sample_rate=1,
-    )
+    db.configure(conf)
+    sentry_sdk.init(dsn=conf.SENTRY_DSN, traces_sample_rate=1)
 
 
 def include_routers(app: FastAPI, conf: Config) -> None:
