@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout branch
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -29,7 +29,7 @@ jobs:
         run: pip install isort==5.10.1 black==22.8.0
 
       - name: Isort
-      - run: isort . --check-only --diff
+        run: isort . --check-only --diff
 
       - name: Black
-      - run: black . --check --diff
+        run: black . --check --diff
