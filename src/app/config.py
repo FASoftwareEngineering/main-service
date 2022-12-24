@@ -28,6 +28,8 @@ class Config(BaseSettings):
         ],
     }
 
+    SENTRY_DSN: str | None = Field(env=f"{_ENV_PREFIX}SENTRY_DSN")
+
     class Config:
         """ENV config"""
 

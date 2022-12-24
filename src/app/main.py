@@ -1,6 +1,7 @@
 import copy
 import sys
 
+import sentry_sdk
 import uvicorn
 from fastapi import FastAPI
 from loguru import logger
@@ -15,6 +16,7 @@ def create_app(conf: Config) -> FastAPI:
 
     configure_logging(conf)
     add_middlewares(app, conf)
+    delayed_configuration(conf)
     include_routers(app, conf)
 
     return app
@@ -41,6 +43,13 @@ def add_middlewares(app: FastAPI, conf: Config) -> None:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+
+def delayed_configuration(conf: Config) -> None:
+    sentry_sdk.init(
+        dsn=conf.SENTRY_DSN,
+        traces_sample_rate=1,
     )
 
 

@@ -25,6 +25,7 @@ psycopg2 = "^2.9.4"
 alembic = "^1.8.1"
 pydantic = { extras = ["dotenv"], version = "^1.10.2" }
 typer = "^0.6.1"
+sentry-sdk = {extras = ["fastapi"], version = "^1.12.1"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.3"
