@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-        run: pip install pylint==2.15.3 wemake-python-styleguide==0.17.0
+      - run: pip install pylint==2.15.3 wemake-python-styleguide==0.17.0
 
       - name: Pylint
         run: pylint app
