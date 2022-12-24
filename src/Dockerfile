@@ -12,7 +12,7 @@ RUN apk update \
 RUN pip install --upgrade pip
 COPY . .
 
-RUN apk add --no-cache libressl-dev musl-dev libffi-dev gcc
+RUN apk add --no-cache musl-dev libffi-dev gcc
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
