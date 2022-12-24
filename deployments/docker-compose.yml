@@ -34,22 +34,22 @@ services:
     networks:
       - mynetwork
 
-  #  app_tests_postgres:
-  #    container_name: app-tests-postgres
-  #    image: postgres
-  #    restart: unless-stopped
-  #    environment:
-  #      POSTGRES_DB: "app_tests_postgres"
-  #      POSTGRES_USER: "postgres"
-  #      POSTGRES_PASSWORD: "postgres"
-  #      PGDATA: /data/app_tests_postgres
-  #
-  #    ports:
-  #      - "5434:5432"
-  #    volumes:
-  #      - ./volumes/postgres/app_tests_postgres:/data/app_tests_postgres
-  #    networks:
-  #      - mynetwork
+  app_tests_postgres:
+    container_name: app-tests-postgres
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "app_tests_postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: /data/app_tests_postgres
+
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./volumes/postgres/app_tests_postgres:/data/app_tests_postgres
+    networks:
+      - mynetwork
 
   caddy:
     container_name: caddy-reverse-proxy
