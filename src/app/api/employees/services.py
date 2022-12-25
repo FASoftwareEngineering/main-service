@@ -1,6 +1,6 @@
 import typing as t
 
-from sqlalchemy import sql, func
+from sqlalchemy import func, sql
 
 from app.api.career.models import Grade, Role, RoleGradeLink
 from app.api.dependencies import PaginationQuery
