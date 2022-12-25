@@ -21,7 +21,7 @@ def employees_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_employee(client: AsyncClient, employees_url: str):
     # получение менеджеров из начального наполнения
     resp_e = await client.get(f"/v1/employees")
@@ -77,7 +77,7 @@ async def test_create_employee(client: AsyncClient, employees_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_employee_by_id(client: AsyncClient, employees_by_id_url: str):
 
     resp = await client.get(employees_by_id_url.format(value=5))
@@ -89,7 +89,7 @@ async def test_get_employee_by_id(client: AsyncClient, employees_by_id_url: str)
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_employee_by_id(client: AsyncClient, employees_by_id_url: str):
     resp = await client.get(employees_by_id_url.format(value=5))
     assert resp.status_code == 200
@@ -102,7 +102,7 @@ async def test_delete_employee_by_id(client: AsyncClient, employees_by_id_url: s
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_employees(client: AsyncClient, employees_url: str):
 
     resp = await client.get(employees_url)
@@ -114,7 +114,7 @@ async def test_get_employees(client: AsyncClient, employees_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_employee(client: AsyncClient, employees_url: str, employees_by_id_url: str):
     # создание сотрудника
 

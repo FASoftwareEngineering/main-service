@@ -21,7 +21,7 @@ def users_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_user(client: AsyncClient, users_url: str):
 
     resp = await client.post(
@@ -48,7 +48,7 @@ async def test_create_user(client: AsyncClient, users_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_user_by_id(client: AsyncClient, users_by_id_url: str):
 
     resp = await client.get(users_by_id_url.format(value=1))
@@ -60,7 +60,7 @@ async def test_get_user_by_id(client: AsyncClient, users_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_user_by_id(client: AsyncClient, users_by_id_url: str):
     resp = await client.get(users_by_id_url.format(value=1))
     assert resp.status_code == 200
@@ -73,7 +73,7 @@ async def test_delete_user_by_id(client: AsyncClient, users_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_users(client: AsyncClient, users_url: str):
 
     resp = await client.get(users_url)
@@ -85,7 +85,7 @@ async def test_get_users(client: AsyncClient, users_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_user(client: AsyncClient, users_url: str, users_by_id_url: str):
 
     # создание пользователя

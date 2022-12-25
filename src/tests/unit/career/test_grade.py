@@ -21,7 +21,7 @@ def grades_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_grade(client: AsyncClient, grades_url: str):
 
     resp = await client.post(
@@ -36,7 +36,7 @@ async def test_create_grade(client: AsyncClient, grades_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_grade_by_id(client: AsyncClient, grades_by_id_url: str):
 
     resp = await client.get(grades_by_id_url.format(value=1))
@@ -48,7 +48,7 @@ async def test_get_grade_by_id(client: AsyncClient, grades_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_grade_by_id(client: AsyncClient, grades_by_id_url: str):
     resp = await client.get(grades_by_id_url.format(value=1))
     assert resp.status_code == 200
@@ -61,7 +61,7 @@ async def test_delete_grade_by_id(client: AsyncClient, grades_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_grades(client: AsyncClient, grades_url: str):
 
     resp = await client.get(grades_url)
@@ -73,7 +73,7 @@ async def test_get_grades(client: AsyncClient, grades_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_grade(client: AsyncClient, grades_url: str, grades_by_id_url: str):
 
     # создание грейда

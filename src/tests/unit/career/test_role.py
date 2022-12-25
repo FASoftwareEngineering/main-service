@@ -21,7 +21,7 @@ def roles_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_role(client: AsyncClient, roles_url: str):
 
     # получение грейдов из начального наполнения
@@ -43,7 +43,7 @@ async def test_create_role(client: AsyncClient, roles_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_role_by_id(client: AsyncClient, roles_by_id_url: str):
 
     resp = await client.get(roles_by_id_url.format(value=1))
@@ -55,7 +55,7 @@ async def test_get_role_by_id(client: AsyncClient, roles_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_role_by_id(client: AsyncClient, roles_by_id_url: str):
     resp = await client.get(roles_by_id_url.format(value=1))
     assert resp.status_code == 200
@@ -68,7 +68,7 @@ async def test_delete_role_by_id(client: AsyncClient, roles_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_roles(client: AsyncClient, roles_url: str):
 
     resp = await client.get(roles_url)
@@ -80,7 +80,7 @@ async def test_get_roles(client: AsyncClient, roles_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_role(client: AsyncClient, roles_url: str, roles_by_id_url: str):
 
     # создание роли
