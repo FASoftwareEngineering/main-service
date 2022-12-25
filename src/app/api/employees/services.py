@@ -1,6 +1,6 @@
 import typing as t
 
-from sqlalchemy import sql
+from sqlalchemy import sql, func
 
 from app.api.career.models import Grade, Role, RoleGradeLink
 from app.api.dependencies import PaginationQuery
@@ -46,10 +46,13 @@ def get_employees_with_pagination_by(
             clause &= RoleGradeLink.grade_id == by.grade_id
 
     if by.skill_ids:
-        stmt = stmt.join(EmployeeSkillLink)
-        # FIXME: как записать на SQL'ном: отобрать всех сотрудников,
-        #  у которых есть все навыки из by.skill_ids?
-        clause &= EmployeeSkillLink.skill_id.in_(by.skill_ids)
+        skill_ids = set(by.skill_ids)
+        stmt = (
+            stmt.join(EmployeeSkillLink)
+            .where(EmployeeSkillLink.skill_id.in_(skill_ids))
+            .group_by(models.Employee.id)
+            .having(func.count(models.Employee.id) == len(skill_ids))
+        )
 
     stmt = stmt.where(clause).offset(page_q.offset).limit(page_q.limit)
     return session.scalars(stmt).all(), count_rows(session, stmt)
