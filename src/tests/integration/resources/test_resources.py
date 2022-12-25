@@ -31,7 +31,7 @@ def grades_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_resources_with_skills(client: AsyncClient, employees_url: str, skills_url: str):
     """
     Use Case: работа со скиллами (навыками) сотрудника
@@ -136,7 +136,7 @@ async def test_resources_with_skills(client: AsyncClient, employees_url: str, sk
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_resources_with_roles_and_grades(
     client: AsyncClient,
     employees_url: str,

@@ -32,7 +32,7 @@ def projects_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "example_projects_init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "example_projects_init_data")
 @pytest.mark.skip(reason="outdated")
 async def test_example_projects(client: AsyncClient, projects_url: str):
     """
@@ -80,7 +80,7 @@ async def test_example_projects(client: AsyncClient, projects_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 @pytest.mark.skip(reason="incomplete")
 async def test_update_project(client: AsyncClient, projects_url: str):
     """

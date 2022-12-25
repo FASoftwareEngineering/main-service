@@ -21,7 +21,7 @@ def projects_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_project(client: AsyncClient, projects_url: str):
 
     resp = await client.post(projects_url, json={"owner_id": 1, "code": "#PROJ 1", "name": "Проект 1"})
@@ -33,7 +33,7 @@ async def test_create_project(client: AsyncClient, projects_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_project_by_id(client: AsyncClient, projects_by_id_url: str):
 
     resp = await client.get(projects_by_id_url.format(value=1))
@@ -45,7 +45,7 @@ async def test_get_project_by_id(client: AsyncClient, projects_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_project_by_id(client: AsyncClient, projects_by_id_url: str):
     resp = await client.get(projects_by_id_url.format(value=1))
     assert resp.status_code == 200
@@ -58,7 +58,7 @@ async def test_delete_project_by_id(client: AsyncClient, projects_by_id_url: str
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_projects(client: AsyncClient, projects_url: str):
 
     resp = await client.get(projects_url)
@@ -70,7 +70,7 @@ async def test_get_projects(client: AsyncClient, projects_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_project(client: AsyncClient, projects_url: str, projects_by_id_url: str):
 
     # создание проекта

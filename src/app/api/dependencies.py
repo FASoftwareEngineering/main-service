@@ -1,15 +1,12 @@
 import typing as t
 
-from app.core.db import SessionLocal, SessionT
+from app.core.db import SessionT, db
 from app.core.schemas import BaseSchema
 
 
 def get_session() -> t.Generator[SessionT, None, None]:
-    session = SessionLocal()
-    try:
+    with db.session_factory() as session:
         yield session
-    finally:
-        session.close()
 
 
 class PaginationQuery(BaseSchema):

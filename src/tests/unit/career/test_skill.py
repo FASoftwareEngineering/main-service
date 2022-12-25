@@ -21,7 +21,7 @@ def skills_by_id_url() -> str:
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_create_skill(client: AsyncClient, skills_url: str):
 
     resp = await client.post(
@@ -40,7 +40,7 @@ async def test_create_skill(client: AsyncClient, skills_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_skill_by_id(client: AsyncClient, skills_by_id_url: str):
 
     resp = await client.get(skills_by_id_url.format(value=1))
@@ -52,7 +52,7 @@ async def test_get_skill_by_id(client: AsyncClient, skills_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_delete_skill_by_id(client: AsyncClient, skills_by_id_url: str):
     resp = await client.get(skills_by_id_url.format(value=1))
     assert resp.status_code == 200
@@ -65,7 +65,7 @@ async def test_delete_skill_by_id(client: AsyncClient, skills_by_id_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_get_skills(client: AsyncClient, skills_url: str):
 
     resp = await client.get(skills_url)
@@ -77,7 +77,7 @@ async def test_get_skills(client: AsyncClient, skills_url: str):
 
 @pytest.mark.anyio
 @pytest.mark.use_case
-@pytest.mark.usefixtures("runtime_db", "init_data")
+@pytest.mark.usefixtures("runtime_tables_function", "init_data")
 async def test_update_skill(client: AsyncClient, skills_url: str, skills_by_id_url: str):
 
     # создание скилла

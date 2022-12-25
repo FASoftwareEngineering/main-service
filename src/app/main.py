@@ -1,6 +1,7 @@
 import copy
 import sys
 
+import sentry_sdk
 import uvicorn
 from fastapi import FastAPI
 from loguru import logger
@@ -8,6 +9,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app import api
 from app.config import Config, config
+from app.core.db import db
 
 
 def create_app(conf: Config) -> FastAPI:
@@ -15,6 +17,7 @@ def create_app(conf: Config) -> FastAPI:
 
     configure_logging(conf)
     add_middlewares(app, conf)
+    delayed_configuration(conf)
     include_routers(app, conf)
 
     return app
@@ -44,6 +47,11 @@ def add_middlewares(app: FastAPI, conf: Config) -> None:
     )
 
 
+def delayed_configuration(conf: Config) -> None:
+    db.configure(conf)
+    sentry_sdk.init(dsn=conf.SENTRY_DSN, traces_sample_rate=1)
+
+
 def include_routers(app: FastAPI, conf: Config) -> None:
     app.include_router(api.router, prefix=conf.API_PREFIX)
 
@@ -51,4 +59,4 @@ def include_routers(app: FastAPI, conf: Config) -> None:
 app = create_app(config)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False, use_colors=True)
+    uvicorn.run("main:app", port=8000, reload=True, use_colors=True)

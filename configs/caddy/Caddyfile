@@ -1,0 +1,4 @@
+http://app.example.com {
+    reverse_proxy {$APP_MATCHER:localhost:8000}
+    log
+}

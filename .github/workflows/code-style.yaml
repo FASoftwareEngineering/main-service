@@ -1,0 +1,41 @@
+name: Code Style
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10" ]
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -r requirements.dev.txt
+
+      - name: Pylint
+        run: pylint app
+
+      - name: Wemake-python-styleguide
+        run: flake8 app
+
+      - name: Isort
+        run: isort . --check-only --diff
+
+      - name: Black
+        run: black . --check --diff

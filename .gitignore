@@ -1,8 +1,10 @@
 .DS_Store
 *.pyc
-database
 .idea/
 __pycache__/
+
+# docker volumes
+deployments/volumes/
 
 # локальные виртуальные окружения
 venv/

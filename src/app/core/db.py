@@ -2,6 +2,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import (
     ORMExecuteState,
     Session,
@@ -11,27 +12,47 @@ from sqlalchemy.orm import (
     with_loader_criteria,
 )
 
-from app.config import config
+from app.config import Config
 
 __all__ = [
-    "engine",
-    "SessionLocal",
+    "Database",
+    "db",
     "SessionT",
     "BaseModel",
     "SurrogateKeyMixin",
     "TimestampMixin",
     "SoftDeleteMixin",
     "StrSizes",
+    "OnDelete",
 ]
 
-engine = sa.create_engine(
-    config.SQLALCHEMY_DATABASE_URI,
-    echo=config.SQLALCHEMY_ECHO,
-    future=True,
-)
-
-SessionLocal = sessionmaker(engine, future=True)
 SessionT = Session
+
+
+class Database:
+    _config: Config
+    _engine: Engine
+    _session_factory: sessionmaker
+
+    def __init__(self, config: Config = None):
+        if config:
+            self.configure(config)
+
+    def configure(self, config: Config) -> None:
+        self._config = config
+        self._engine = sa.create_engine(config.SQLALCHEMY_DATABASE_URI, echo=config.DEBUG, future=True)
+        self._session_factory = sessionmaker(self._engine, future=True)
+
+    @property
+    def engine(self) -> Engine:
+        return self._engine
+
+    @property
+    def session_factory(self) -> sessionmaker:
+        return self._session_factory
+
+
+db = Database()
 
 
 @as_declarative()
@@ -81,8 +102,15 @@ def _add_filtering_criteria(execute_state: ORMExecuteState):
 
 
 class StrSizes:
-    XS = 16
-    SM = 32
-    MD = 64
-    LG = 128
-    XL = 256
+    # дополнительное пространство для реализации soft-delete
+    XS = 16 + 16
+    SM = 32 + 16
+    MD = 64 + 16
+    LG = 128 + 16
+    XL = 256 + 16
+
+
+class OnDelete:
+    RESTRICT = "RESTRICT"
+    CASCADE = "CASCADE"
+    SET_NULL = "SET NULL"

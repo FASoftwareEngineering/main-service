@@ -1,5 +1,7 @@
 import typing as t
+from datetime import datetime
 
+import sqlalchemy as sa
 from sqlalchemy import sql
 
 from app.core.db import SessionT, SoftDeleteMixin, SurrogateKeyMixin
@@ -51,26 +53,45 @@ class CRUD(t.Generic[_M]):
     ) -> tuple[list[_M], int]:
         exec_opts = {"_include_deleted": _include_deleted}
         stmt = sql.select(self.model_cls).offset(offset).limit(limit)
-        total = self.session.scalar(sql.select(sql.func.count()).select_from(self.model_cls))
+        total = count_rows(self.session, self.model_cls)
         return self.session.scalars(stmt, execution_options=exec_opts).all(), total
 
     def delete(self, entity: _M, soft: bool = True) -> None:
         if soft:
-            entity.deleted = True
-            self.save(entity)
+            soft_delete(self.session, entity, commit=False)
         else:
             self.session.delete(entity)
 
     def delete_by_id(self, id_: int, soft: bool = True) -> bool:
         if soft:
-            stmt = sql.update(self.model_cls).values(deleted=True)
-        else:
-            stmt = sql.delete(self.model_cls)
+            entity = self.get_by_id(id_)
+            if entity is None:
+                return False
+            soft_delete(self.session, entity, commit=False)
+            return True
 
-        stmt = stmt.where(self.model_cls.id == id_)
+        stmt = sql.delete(self.model_cls).where(self.model_cls.id == id_)
         res = self.session.execute(stmt)
         return res.rowcount > 0  # type: ignore
 
 
 def count_rows(session: SessionT, stmt) -> int:
-    return session.scalar(sql.select(sql.func.count()).select_from(stmt))
+    return session.scalar(sql.select(sql.func.count()).select_from(stmt.subquery()))
+
+
+def soft_delete(session: SessionT, entity: _M, commit: bool = True) -> None:
+    entity.deleted = True
+
+    for col in entity.__table__.columns:
+        # TODO: что если имя колонки отличается от имени атрибута?
+        # TODO: обработать множественный UniqueConstraint
+        # TODO: для VARCHAR обработать максимальную длину
+        # TODO: что делать с другими типами данных?
+        if (col.primary_key or col.unique) and isinstance(col.type, sa.String):
+            attr = getattr(entity, col.name)
+            timestamp_prefix = int(datetime.utcnow().timestamp())
+            setattr(entity, col.name, f"{timestamp_prefix}::{attr}")
+
+    session.add(entity)
+    if commit:
+        session.commit()
