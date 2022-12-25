@@ -102,11 +102,12 @@ def _add_filtering_criteria(execute_state: ORMExecuteState):
 
 
 class StrSizes:
-    XS = 16
-    SM = 32
-    MD = 64
-    LG = 128
-    XL = 256
+    # дополнительное пространство для реализации soft-delete
+    XS = 16 + 16
+    SM = 32 + 16
+    MD = 64 + 16
+    LG = 128 + 16
+    XL = 256 + 16
 
 
 class OnDelete:
